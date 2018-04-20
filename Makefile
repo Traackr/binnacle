@@ -59,6 +59,9 @@ docker-test-unit: .docker-prep
 		$(BUILD_IMAGE) \
 		make tools test-unit
 
+install:
+	@scripts/install.sh
+
 test-coverage:
 	@mkdir -p $(COVERAGE_DIR)
 	@rm -rf $(COVERAGE_DIR)/*
