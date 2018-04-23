@@ -1,0 +1,29 @@
+dist: trusty
+sudo: false
+language: go
+
+go:
+- 1.8.x
+
+install:
+- make tools
+
+script:
+- make travis
+
+before_deploy:
+- GENERATE_PACKAGES=1 TARGETS=release make build
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "gLmBv/PHbM3dDhIHRXqZ0XZGzWhUEF3usn5KVE3ODyEOlsePxPMMWVvsQCirVr01h5449wMZPrYll5f0trMgLbBS8e4zdmjzpQp5aIbZK9DADJs/et9gHcfuzrq3KVxZgjG5mnt7mFKqfH51BLbgiAPjJzYeQ+KriDGkIeFTN2bsDxWJhFtv/IaZN+yNKzC5tCFOJT/onDBuTVzcl1g1y0qAtsBPQMlI/tFZF1eHsODFAld/CinZcgpr+5r6R4MZityLxH4nXTIAtiaXTv5G3F4uTAcpa9Nc6CWoynghBx7UflBUyRR0vTWhYvBU537mx+RPUBE/XDBpTB9hqsvDD3LUpxk5H+I2oSrW+5Uh6p3pVLWcY+0fSWxynQKSxKAlhuIe/F26aZmr8lZpmaJ4+pDO7lm1CND8We/llPEWehEvI2F4g9KzCQ+CtX87F0VPZSNXkMrIKlfo1sVjwmMv1gE38cszV2Ct946WibUxhNI6x9w5ZPlReXXwyIT3y44JJ7JQs7Av4MXPsOJ2TcA0H+OAjH7r4W0TaWAcEtT5tuhbwse46sTZOMxE5rFXvAxtm0Q17ZCZ5rX37jpADAFG0VcqM+eTRPSmmdwFFYD+yXweQJCXvVe9odP0BhvZCTcfm9IgY5YVnQeTEsWG+6CRcBqeBaOkc17oXnatRX0Llco="
+  file:
+    - "pkg/binnacle-*.tar.gz"
+    - "pkg/SHA256SUM.txt"
+  file_glob: true
+  skip_cleanup: true
+  overwrite: false
+  on:
+    tags: true
+    repo: traackr/binnacle
