@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/traackr/binnacle/cmd"
+import "github.com/Traackr/binnacle/cmd"
 
 func main() {
 	cmd.Execute()

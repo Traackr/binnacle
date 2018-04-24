@@ -26,8 +26,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Traackr/binnacle/config"
 	"github.com/spf13/cobra"
-	"github.com/traackr/binnacle/config"
 )
 
 // syncCmd represents the status command
