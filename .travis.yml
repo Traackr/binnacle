@@ -26,4 +26,4 @@ deploy:
   overwrite: false
   on:
     tags: true
-    repo: traackr/binnacle
+    repo: Traackr/binnacle
