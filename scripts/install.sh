@@ -8,9 +8,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 cd "$DIR"
 
 if [[ $(uname) == "Linux" ]]; then
-  cp bin/* /usr/local/bin/.
+  cp bin/* $GOPATH/bin/.
 elif [[ $(uname) == "Darwin" ]]; then
-  cp bin/* /usr/local/bin/.
+  cp bin/* $GOPATH/bin/.
 else
   echo "Unable to install on $(uname). Use Linux or Darwin."
   exit 1
