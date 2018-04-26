@@ -9,6 +9,12 @@
 			"revisionTime": "2016-03-09T02:19:12Z"
 		},
 		{
+			"checksumSHA1": "00wtByhdiRe1Q1nOYEqaQzWkrkI=",
+			"path": "github.com/cpuguy83/go-md2man/md2man",
+			"revision": "48d8747a2ca13185e7cc8efe6e9fc196a83f71a5",
+			"revisionTime": "2018-02-15T02:17:27Z"
+		},
+		{
 			"checksumSHA1": "OFu4xJEIjiI8Suu+j/gabfp+y6Q=",
 			"origin": "github.com/stretchr/testify/vendor/github.com/davecgh/go-spew/spew",
 			"path": "github.com/davecgh/go-spew/spew",
@@ -119,6 +125,20 @@
 			"revisionTime": "2017-06-01T20:57:54Z"
 		},
 		{
+			"checksumSHA1": "6O19ufsJoV6Z3E9jYZakcgEII1E=",
+			"origin": "github.com/cpuguy83/go-md2man/vendor/github.com/russross/blackfriday",
+			"path": "github.com/russross/blackfriday",
+			"revision": "48d8747a2ca13185e7cc8efe6e9fc196a83f71a5",
+			"revisionTime": "2018-02-15T02:17:27Z"
+		},
+		{
+			"checksumSHA1": "HkNUuhYSk5C2fTMa536jBiORq44=",
+			"origin": "github.com/cpuguy83/go-md2man/vendor/github.com/shurcooL/sanitized_anchor_name",
+			"path": "github.com/shurcooL/sanitized_anchor_name",
+			"revision": "48d8747a2ca13185e7cc8efe6e9fc196a83f71a5",
+			"revisionTime": "2018-02-15T02:17:27Z"
+		},
+		{
 			"checksumSHA1": "VHULZdEZKBxJvlZnlhX7Ug19lgY=",
 			"path": "github.com/sirupsen/logrus",
 			"revision": "85b1699d505667d13f8ac4478c1debbf85d6c5de",
@@ -133,6 +153,12 @@
 		{
 			"checksumSHA1": "/r7cjQsFAPHwW1vUgbP0/WFZVPE=",
 			"path": "github.com/spf13/cobra",
+			"revision": "4c05eb1145f16d0e6bb4a3e1b6d769f4713cb41f",
+			"revisionTime": "2016-04-03T14:08:35Z"
+		},
+		{
+			"checksumSHA1": "WZDZJ+5JCSA5PJSGx870g0l0OZY=",
+			"path": "github.com/spf13/cobra/doc",
 			"revision": "4c05eb1145f16d0e6bb4a3e1b6d769f4713cb41f",
 			"revisionTime": "2016-04-03T14:08:35Z"
 		},

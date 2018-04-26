@@ -1,6 +1,6 @@
 .PHONY: build clean docker-build docker-test-coverage docker-test-unit .docker-prep tag-version test-coverage test-unit tools version version-bump
 
-BUILD_IMAGE=golang:1.8.1
+BUILD_IMAGE=golang:1.10.1
 COVERAGE_DIR=./$(DOCS_DIR)/coverage
 DOCS_DIR=./docs
 EXTERNAL_TOOLS=\
@@ -38,7 +38,18 @@ docker-build: .docker-prep
 		-e TARGETS \
 		$(BUILD_IMAGE) \
 		make tools build
-	
+
+docker-generate-documentation:
+	@echo "==> Starting docker container for generating documentation..."
+	@docker run --rm \
+		-v "$$PWD":/go/src/$(PACKAGE_PATH) \
+		-w /go/src/$(PACKAGE_PATH) \
+		-e GENERATE_PACKAGES \
+		-e LOCAL_TARGET=$(LOCAL_TARGET) \
+		-e TARGETS \
+		$(BUILD_IMAGE) \
+		make generate-documentation
+
 .docker-prep:
 	@echo "==> Pulling $(BUILD_IMAGE)..."
 	@docker pull $(BUILD_IMAGE) > /dev/null
@@ -58,6 +69,9 @@ docker-test-unit: .docker-prep
 		-w /go/src/$(PACKAGE_PATH) \
 		$(BUILD_IMAGE) \
 		make tools test-unit
+
+generate-documentation:
+	@go run generate_docs.go
 
 install:
 	@scripts/install.sh
@@ -86,6 +100,9 @@ tools:
 	done
 
 travis: test-unit build
+
+.travis-sed:
+	gofmt -w -r '"github.com/traackr/binnacle/cmd" -> "github.com/Traackr/binnacle/cmd"' main.go
 
 version:
 	@if [ -e $(VERSION_FILE) ]; then \
