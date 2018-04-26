@@ -33,7 +33,7 @@ import (
 // syncCmd represents the status command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
-	Short: "Syncs each release within the given Binnacle configuration with Helm",
+	Short: "Syncs each release within the given Binnacle configuration with `helm`",
 	Long:  ``,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		syncCmdPreRun()
@@ -67,9 +67,9 @@ func syncCmdRun(args ...string) {
 	}
 
 	// Sync charts
-	// if err := syncCharts(c.Charts, args...); err != nil {
-	// 	log.Fatal(err)
-	// }
+	if err := syncCharts(c.Charts, args...); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func syncCmdPostRun() {

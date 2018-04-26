@@ -31,7 +31,7 @@ import (
 // statusCmd represents the status command
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Displays the Helm status for each release within the given Binnacle configuration",
+	Short: "Displays the `helm` status for each release within the given Binnacle configuration",
 	Long:  ``,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		statusCmdPreRun()

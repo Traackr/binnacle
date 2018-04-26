@@ -47,7 +47,7 @@ var VERSION string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "binnacle",
-	Short: "An automation tool for Kubernetes' Helm.",
+	Short: "An opinionated automation tool for Kubernetes' Helm.",
 	Long:  ``,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		rootCmdPersistentPreRun(cmd)
