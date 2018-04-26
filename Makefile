@@ -71,7 +71,7 @@ docker-test-unit: .docker-prep
 		make tools test-unit
 
 generate-documentation:
-	@go run generate_docs.go
+	@go run ./utils/generate_docs.go
 
 install:
 	@scripts/install.sh
