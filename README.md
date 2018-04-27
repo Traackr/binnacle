@@ -63,6 +63,234 @@ repositories:
 
 Documentation for all of the commands within `binnacle` are available [here][commands].
 
+### Using Binnacle
+
+The standard workflow when using binnacle is to use the [template][command-template] command to verify the desired configuration files are generated, use the [sync][command-sync] command to create/update the existing release configuration within Helm, and [status][command-status] to get the status of a release.
+
+Using the configuration available at `test-data/demo.yml` you can run the template command:
+
+```bash
+$ binnacle template -c ./test-data/demo.yml 
+Loading config file: ./test-data/demo.yml
+---
+# Source: concourse/templates/namespace.yaml
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    "helm.sh/resource-policy": keep
+  name: apps-concourse-main
+  labels:
+...
+```
+
+By reviewing the output you are able to verify that you have specificied all of the necessary configuration aspects of the chart.  Once you are happy with how the chart is configured you can [sync][command-sync] the charts to Helm:
+
+```bash
+
+$  binnacle sync -c ./test-data/demo.yml 
+Loading config file: ./test-data/demo.yml
+"stable" has been added to your repositories
+Release "apps-concourse" does not exist. Installing it now.
+NAME:   apps-concourse
+LAST DEPLOYED: Fri Apr 27 14:24:19 2018
+NAMESPACE: apps
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1beta1/StatefulSet
+NAME                   DESIRED  CURRENT  AGE
+apps-concourse-worker  2        0        1s
+
+==> v1/Pod(related)
+NAME                                        READY  STATUS             RESTARTS  AGE
+apps-concourse-postgresql-5f964dd587-6ng8f  0/1    Pending            0         1s
+apps-concourse-web-5dd649b7f6-7v78w         0/1    ContainerCreating  0         1s
+
+==> v1/Namespace
+NAME                 STATUS  AGE
+apps-concourse-main  Active  1s
+
+==> v1/Secret
+NAME                       TYPE    DATA  AGE
+apps-concourse-postgresql  Opaque  1     1s
+apps-concourse-concourse   Opaque  7     1s
+
+==> v1/PersistentVolumeClaim
+NAME                       STATUS   VOLUME  CAPACITY  ACCESS MODES  STORAGECLASS  AGE
+apps-concourse-postgresql  Pending  1s
+
+==> v1beta1/ClusterRole
+NAME                AGE
+apps-concourse-web  1s
+
+==> v1/Service
+NAME                       TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)            AGE
+apps-concourse-postgresql  ClusterIP  10.233.89.90   <none>       5432/TCP           1s
+apps-concourse-web         ClusterIP  10.233.57.192  <none>       8080/TCP,2222/TCP  1s
+apps-concourse-worker      ClusterIP  None           <none>       <none>             1s
+
+==> v1/ServiceAccount
+NAME                   SECRETS  AGE
+apps-concourse-web     1        1s
+apps-concourse-worker  1        1s
+
+==> v1beta1/Role
+NAME                   AGE
+apps-concourse-worker  1s
+
+==> v1beta1/RoleBinding
+NAME                     AGE
+apps-concourse-web-main  1s
+apps-concourse-worker    1s
+
+==> v1beta1/Deployment
+NAME                       DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+apps-concourse-postgresql  1        1        1           0          1s
+apps-concourse-web         1        1        1           0          1s
+
+==> v1beta1/PodDisruptionBudget
+NAME                   MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE
+apps-concourse-worker  1              N/A              0                    1s
+
+
+NOTES:
+
+* Concourse can be accessed:
+
+  * Within your cluster, at the following DNS name at port 8080:
+
+    apps-concourse-web.apps.svc.cluster.local
+
+  * From outside the cluster, run these commands in the same shell:
+
+    export POD_NAME=$(kubectl get pods --namespace apps -l "app=apps-concourse-web" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:8080 to use Concourse"
+    kubectl port-forward --namespace apps $POD_NAME 8080:8080
+
+* Login with the following credentials
+  
+  Username: concourse
+  Password: concourse
+  
+* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
+
+*******************
+******WARNING******
+*******************
+
+You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
+```
+
+From the output you can see that the release did not exist "apps-concourse" so Helm created it.  To get updates on the status of the deployment you can use the [status][command-status] command:
+
+```bash
+
+$ binnacle status -c ./test-data/demo.yml 
+Loading config file: ./test-data/demo.yml
+LAST DEPLOYED: Fri Apr 27 14:24:19 2018
+NAMESPACE: apps
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Pod(related)
+NAME                                        READY  STATUS   RESTARTS  AGE
+apps-concourse-postgresql-5f964dd587-6ng8f  0/1    Pending  0         1m
+apps-concourse-web-5dd649b7f6-7v78w         0/1    Running  0         1m
+
+==> v1/Namespace
+NAME                 STATUS  AGE
+apps-concourse-main  Active  1m
+
+==> v1/Secret
+NAME                       TYPE    DATA  AGE
+apps-concourse-postgresql  Opaque  1     1m
+apps-concourse-concourse   Opaque  7     1m
+
+==> v1beta1/Role
+NAME                   AGE
+apps-concourse-worker  1m
+
+==> v1/Service
+NAME                       TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)            AGE
+apps-concourse-postgresql  ClusterIP  10.233.89.90   <none>       5432/TCP           1m
+apps-concourse-web         ClusterIP  10.233.57.192  <none>       8080/TCP,2222/TCP  1m
+apps-concourse-worker      ClusterIP  None           <none>       <none>             1m
+
+==> v1beta1/PodDisruptionBudget
+NAME                   MIN AVAILABLE  MAX UNAVAILABLE  ALLOWED DISRUPTIONS  AGE
+apps-concourse-worker  1              N/A              0                    1m
+
+==> v1beta1/StatefulSet
+NAME                   DESIRED  CURRENT  AGE
+apps-concourse-worker  2        2        1m
+
+==> v1/PersistentVolumeClaim
+NAME                       STATUS   VOLUME  CAPACITY  ACCESS MODES  STORAGECLASS  AGE
+apps-concourse-postgresql  Pending  1m
+
+==> v1/ServiceAccount
+NAME                   SECRETS  AGE
+apps-concourse-web     1        1m
+apps-concourse-worker  1        1m
+
+==> v1beta1/ClusterRole
+NAME                AGE
+apps-concourse-web  1m
+
+==> v1beta1/RoleBinding
+NAME                     AGE
+apps-concourse-web-main  1m
+apps-concourse-worker    1m
+
+==> v1beta1/Deployment
+NAME                       DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+apps-concourse-postgresql  1        1        1           0          1m
+apps-concourse-web         1        1        1           0          1m
+
+
+NOTES:
+
+* Concourse can be accessed:
+
+  * Within your cluster, at the following DNS name at port 8080:
+
+    apps-concourse-web.apps.svc.cluster.local
+
+  * From outside the cluster, run these commands in the same shell:
+
+    export POD_NAME=$(kubectl get pods --namespace apps -l "app=apps-concourse-web" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:8080 to use Concourse"
+    kubectl port-forward --namespace apps $POD_NAME 8080:8080
+
+* Login with the following credentials
+  
+  Username: concourse
+  Password: concourse
+  
+* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
+
+*******************
+******WARNING******
+*******************
+
+You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
+```
+
+If you want to remove a release, you can change the `state` from `present` to `absent` and run the [sync][command-sync] command:
+
+```bash
+$ binnacle sync -c ./test-data/demo.yml 
+Loading config file: ./test-data/demo.yml
+"stable" has been added to your repositories
+These resources were kept due to the resource policy:
+[Namespace] apps-concourse-main
+
+release "apps-concourse" deleted
+```
+
 ## Development
 
 To ease the entry of building `binnacle` there are two methods supported by the local Makefile.  The first is for a fully installed and configured [Go][go] (version 1.8+) environment on your machine, and the second requires only that docker be installed.
@@ -131,6 +359,9 @@ To run the unit tests with coverage reports:
 make docker-test-coverage
 ```
 
+[command-status]: docs/commands/binnacle_status.md
+[command-sync]: docs/commands/binnacle_sync.md
+[command-template]: docs/commands/binnacle_template.md
 [commands]: docs/commands/binnacle.md
 [docker]: https://www.docker.com
 [github-releases]: https://github.com/Traackr/binnacle/releases
