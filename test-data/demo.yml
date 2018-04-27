@@ -10,7 +10,7 @@ charts:
     # This is the name of the repository within which the helm chart is located
     repo: stable
     # This determines if the release is created or removed. Default: present Options: absent, present
-    state: absent
+    state: present
     # Any data under values are passed to Helm to configure the given chart
     values:
       image: concourse/concourse
