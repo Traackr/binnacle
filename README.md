@@ -2,7 +2,7 @@
 
 `binnacle` is an opinionated automation tool used to interact with Kubernetes' [Helm][helm].  By offering a single file to manage one or many charts, you can easily control all aspects of your Helm managed applications.
 
-`binnacle` is similar in nature to [Helmfile][helmfile] with a slightly different appraoch to managing Helm Charts.
+`binnacle` is similar in nature to [Helmfile][helmfile] with a slightly different approach to managing Helm Charts.
 
 ## Installation
 
