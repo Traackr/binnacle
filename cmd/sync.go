@@ -232,7 +232,7 @@ func repoExists(repo config.RepositoryConfig, repos []config.RepositoryConfig) (
 	// Check if this repo already exists
 	for _, checkRepo := range repos {
 		// Check if the repos are equal
-		if repo == checkRepo {
+		if repo.Equal(checkRepo) {
 			exists = true
 			fullMatch = true
 			break
