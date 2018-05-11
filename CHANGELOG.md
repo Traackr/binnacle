@@ -5,9 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-### Changes
+None at this time.
 
-- Updated README.md
+## [0.0.2] - 2018-05-11
+
+### Notes
+
+- Added support for the `helm-diff` plugin via the `diff` subcommand.
 
 ## [0.0.1] - 2018-04-27
 
@@ -15,5 +19,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/traackr/binnacle/tree/0.0.2
 [0.0.1]: https://github.com/traackr/binnacle/tree/0.0.1

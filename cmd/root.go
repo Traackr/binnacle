@@ -124,6 +124,44 @@ func rootCmdRun() {
 	// This is here as a no-op to allow `binnacle --version` to work correctly
 }
 
+// PluginInstalled returns if the given plugin is installed
+func PluginInstalled(plugin string) (bool, error) {
+	var err error
+	var output []string
+	var res Result
+
+	// Get a list of currently installed plugins
+	res, err = RunHelmCommand("plugin", "list")
+	if err != nil {
+		fmt.Println(strings.TrimSpace(res.Stderr))
+		return false, err
+	}
+
+	// Split the output on the new line
+	output = strings.Split(res.Stdout, "\n")
+
+	// Remove the column titles
+	if len(output) > 0 {
+		output = output[1:]
+	}
+
+	// Iterate the plugins
+	for _, line := range output {
+		if len(line) == 0 {
+			continue
+		}
+
+		// Split the string by a space
+		split := strings.Fields(line)
+
+		if plugin == split[0] {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
 // RunHelmCommand runs the given command against helm
 func RunHelmCommand(args ...string) (Result, error) {
 	var result Result

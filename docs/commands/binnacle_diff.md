@@ -1,14 +1,14 @@
-## binnacle sync
+## binnacle diff
 
-Syncs each release within the given Binnacle configuration with `helm`
+Displays a diff between the current release and new release of a Helm chart.  (Requires helm-diff plugin)
 
 ### Synopsis
 
 
-Syncs each release within the given Binnacle configuration with `helm`
+Displays a diff between the current release and new release of a Helm chart.  (Requires helm-diff plugin)
 
 ```
-binnacle sync
+binnacle diff
 ```
 
 ### Options inherited from parent commands
