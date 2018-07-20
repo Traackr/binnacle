@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 None at this time.
 
+## [0.0.5] - 2018-07-20
+
+### Notes
+
+- The 0.0.4 release improperly used the 0.0.3 version.  This change is the exact functionality as 0.0.4 but with the version correctly updated.
+
 ## [0.0.4] - 2018-07-20
 
 ### Notes
@@ -32,7 +38,8 @@ None at this time.
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/traackr/binnacle/tree/0.0.5
 [0.0.4]: https://github.com/traackr/binnacle/tree/0.0.4
 [0.0.3]: https://github.com/traackr/binnacle/tree/0.0.3
 [0.0.2]: https://github.com/traackr/binnacle/tree/0.0.2
