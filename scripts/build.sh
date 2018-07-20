@@ -37,6 +37,7 @@ shasum256() {
 # Compile Configuration
 #
 
+DARWIN_CGO_ENABLED=0
 GIT_COMMIT="$(git rev-parse --short HEAD)"
 GIT_DIRTY="$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
 EXTLDFLAGS="-X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.GITCOMMIT=${GIT_COMMIT}${GIT_DIRTY} -X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.VERSION=$VERSION"
@@ -63,28 +64,33 @@ elif [[ "$TARGETS" != "" ]]; then
   targets="$TARGETS"
 fi
 
+# Enable CGO_ENABLED when building for darwin on darwin
+if [[ $(uname) == "Darwin" ]]; then
+  DARWIN_CGO_ENABLED=1
+fi
+
 set +e
 
 for target in $targets; do
   case $target in
     "darwin_amd64")
       echo "==> Building darwin amd64..."
-      CGO_ENABLED=1 GOARCH="amd64" GOOS="darwin" \
+      CGO_ENABLED=$DARWIN_CGO_ENABLED GOARCH="amd64" GOOS="darwin" \
         go build -ldflags "$EXTLDFLAGS" -o "pkg/darwin_amd64/$PACKAGE"
       ;;
     "linux_amd64")
       echo "==> Building linux amd64..."
-      CGO_ENABLED=1 GOOS="linux" GOARCH="amd64" \
+      CGO_ENABLED=0 GOOS="linux" GOARCH="amd64" \
         go build -ldflags "$STATIC $EXTLDFLAGS" -o "pkg/linux_amd64/$PACKAGE"
       ;;
     "linux_amd64-lxc")
       echo "==> Building linux amd64 with lxc..."
-      CGO_ENABLED=1 GOOS="linux" GOARCH="amd64" \
+      CGO_ENABLED=0 GOOS="linux" GOARCH="amd64" \
         go build -ldflags "$STATIC $EXTLDFLAGS" -o "pkg/linux_amd64-lxc/$PACKAGE" -tags "lxc"
       ;;
     "windows_amd64")
       echo "==> Building windows amd64..."
-      CGO_ENABLED=1 GOOS="windows"  GOARCH="amd64" CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc" \
+      CGO_ENABLED=0 GOOS="windows"  GOARCH="amd64" CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc" \
         go build -ldflags "$STATIC $EXTLDFLAGS" -o "pkg/windows_amd64/$PACKAGE.exe"
       ;;
     *)
@@ -110,7 +116,7 @@ if [[ "$GENERATE_PACKAGES" != "" ]]; then
     pushd $PLATFORM >/dev/null 2>&1
     tar czvf ../${PACKAGE}-${OSARCH}.tar.gz ./* >/dev/null
     popd >/dev/null 2>&1
-    rm -rf $PLATFORM >/dev/null
+    #rm -rf $PLATFORM >/dev/null
   done
 
   echo "==> Generating SHA256..."

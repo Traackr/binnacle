@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 None at this time.
 
+## [0.0.4] - 2018-07-20
+
+### Notes
+
+- The `binnacle` binaries were improperly build as non-static binaries.  They have been converted to static binaries.
+- The Darwin build of `binnacle` was not working properly on Travis.  This has been resolved.
+
 ## [0.0.3] - 2018-07-12
 
 ### Notes
@@ -25,7 +32,8 @@ None at this time.
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.3...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.4...HEAD
+[0.0.4]: https://github.com/traackr/binnacle/tree/0.0.4
 [0.0.3]: https://github.com/traackr/binnacle/tree/0.0.3
 [0.0.2]: https://github.com/traackr/binnacle/tree/0.0.2
 [0.0.1]: https://github.com/traackr/binnacle/tree/0.0.1
