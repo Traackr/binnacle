@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- None at this time.
+
+## [0.1.0] - 2018-11-09
+
 - maps read from YAML values were being transformed into `map[string]string`, but will now be `map[string]interface{}` to maintain the values' types
 
 ## [0.0.5] - 2018-07-20
@@ -38,7 +42,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/traackr/binnacle/tree/0.1.0
 [0.0.5]: https://github.com/traackr/binnacle/tree/0.0.5
 [0.0.4]: https://github.com/traackr/binnacle/tree/0.0.4
 [0.0.3]: https://github.com/traackr/binnacle/tree/0.0.3
