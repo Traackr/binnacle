@@ -98,16 +98,18 @@ func cleanupInterfaceMap(in map[interface{}]interface{}) map[string]interface{} 
 	return res
 }
 
+// In order to marshal to JSON, map keys must be Strings even though YAML allows other types
+// Recursively walk through this value to transform map[interface{}]interface{} into map[string]interface{}
+//
+// See: https://github.com/go-yaml/yaml/issues/139 (supposedly a fix will be available in v3 of go-yaml)
 func cleanupMapValue(v interface{}) interface{} {
 	switch v := v.(type) {
 	case []interface{}:
 		return cleanupInterfaceArray(v)
 	case map[interface{}]interface{}:
 		return cleanupInterfaceMap(v)
-	case string:
-		return v
 	default:
-		return fmt.Sprintf("%v", v)
+		return v
 	}
 }
 
