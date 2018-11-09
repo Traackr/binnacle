@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-None at this time.
+- maps read from YAML values were being transformed into `map[string]string`, but will now be `map[string]interface{}` to maintain the values' types
 
 ## [0.0.5] - 2018-07-20
 
