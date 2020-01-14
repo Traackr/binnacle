@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.2.0] - 2020-01-13
+
+- This release introduces Helm 3 support by adding a lightweight touchpoint to detect if helm2 or helm3 is getting targetted and treating helm2 as the exception case for processing.  This will allow helm2 support to be easily removed upon its EOL.  To facilitate this detected binnacle will run `helm version` during certain commands to help determine the target version and change the underlying helm commands accordingly.
+
 ## [0.1.1] - 2018-11-09
 
 - The 0.1.0 release improperly used the 0.0.5 version.  This change is the exact functionality as 0.1.0 but with the version correctly updated.

@@ -104,21 +104,32 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 			cmdArgs = append(cmdArgs, chart.ChartShortName())
 			cmdArgs = append(cmdArgs, "-i")
 			cmdArgs = append(cmdArgs, "--force")
-			cmdArgs = append(cmdArgs, "--namespace")
-			cmdArgs = append(cmdArgs, chart.Namespace)
+
+			if len(chart.Namespace) > 0 {
+				cmdArgs = append(cmdArgs, "--namespace")
+				cmdArgs = append(cmdArgs, chart.Namespace)
+			}
+
 			cmdArgs = append(cmdArgs, "--values")
 			cmdArgs = append(cmdArgs, valuesFile)
 			if len(chart.Version) > 0 {
 				cmdArgs = append(cmdArgs, "--version")
 				cmdArgs = append(cmdArgs, chart.Version)
 			}
-			cmdArgs = append(cmdArgs, args...)
 		} else {
-			cmdArgs = append(cmdArgs, "delete")
-			cmdArgs = append(cmdArgs, "--purge")
-			cmdArgs = append(cmdArgs, chart.Release)
-			cmdArgs = append(cmdArgs, args...)
+			if IsHelm2() {
+				cmdArgs = append(cmdArgs, "delete")
+				cmdArgs = append(cmdArgs, "--purge")
+				cmdArgs = append(cmdArgs, chart.Release)
+			} else {
+				cmdArgs = append(cmdArgs, "uninstall")
+				cmdArgs = append(cmdArgs, chart.Release)
+				cmdArgs = append(cmdArgs, "--namespace")
+				cmdArgs = append(cmdArgs, chart.Namespace)
+			}
 		}
+
+		cmdArgs = append(cmdArgs, args...)
 
 		res, err := RunHelmCommand(cmdArgs...)
 		if err != nil {

@@ -55,14 +55,13 @@ func templateCmdPreRun() {
 }
 
 func templateCmdRun(args ...string) {
-
 	// Load our configuration
 	c, err := config.LoadAndValidateFromViper()
 
 	if err != nil {
 		log.Fatalf("unable to load configuration: %v", err)
 	}
-
+	
 	var charts = c.Charts
 
 	log.Debugf("Loaded %d charts.", len(charts))
@@ -131,19 +130,37 @@ func templateCmdRun(args ...string) {
 		cmdArgs = nil
 
 		cmdArgs = append(cmdArgs, "template")
-		cmdArgs = append(cmdArgs, dir+"/"+chart.Name)
 
-		// Add the namespace if given
-		if len(chart.Namespace) > 0 {
-			cmdArgs = append(cmdArgs, "--namespace")
-			cmdArgs = append(cmdArgs, chart.Namespace)
+		if IsHelm2() {
+			cmdArgs = append(cmdArgs, dir+"/"+chart.Name)
+
+			// Add the namespace if given
+			if len(chart.Namespace) > 0 {
+				cmdArgs = append(cmdArgs, "--namespace")
+				cmdArgs = append(cmdArgs, chart.Namespace)
+			}
+
+			cmdArgs = append(cmdArgs, "--name")
+			cmdArgs = append(cmdArgs, chart.Release)
+
+			cmdArgs = append(cmdArgs, "--values")
+			cmdArgs = append(cmdArgs, valuesFile)
+		} else {
+			// NAME
+			cmdArgs = append(cmdArgs, chart.Release)
+
+			// CHART
+			cmdArgs = append(cmdArgs, dir+"/"+chart.Name)
+
+			// Add the namespace if given
+			if len(chart.Namespace) > 0 {
+				cmdArgs = append(cmdArgs, "--namespace")
+				cmdArgs = append(cmdArgs, chart.Namespace)
+			}
+
+			cmdArgs = append(cmdArgs, "--values")
+			cmdArgs = append(cmdArgs, valuesFile)
 		}
-
-		cmdArgs = append(cmdArgs, "--name")
-		cmdArgs = append(cmdArgs, chart.Release)
-
-		cmdArgs = append(cmdArgs, "--values")
-		cmdArgs = append(cmdArgs, valuesFile)
 
 		cmdArgs = append(cmdArgs, args...)
 
