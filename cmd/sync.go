@@ -103,7 +103,10 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 			cmdArgs = append(cmdArgs, chart.Release)
 			cmdArgs = append(cmdArgs, chart.ChartShortName())
 			cmdArgs = append(cmdArgs, "-i")
-			cmdArgs = append(cmdArgs, "--force")
+
+			if IsHelm2() {
+				cmdArgs = append(cmdArgs, "--force")
+			}
 
 			if len(chart.Namespace) > 0 {
 				cmdArgs = append(cmdArgs, "--namespace")
