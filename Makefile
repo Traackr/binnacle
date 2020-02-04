@@ -84,13 +84,11 @@ test-coverage:
 	@go list ./... | grep -v vendor/ | grep -v mock | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=$(COVERAGE_DIR)/coverage.tmp {} && tail -n +2 $(COVERAGE_DIR)/coverage.tmp >> $(COVERAGE_DIR)/coverage.txt'
 	@rm $(COVERAGE_DIR)/coverage.tmp
 	@go tool cover -html=$(COVERAGE_DIR)/coverage.txt -o $(COVERAGE_DIR)/report.html
-	@gocover-cobertura < $(COVERAGE_DIR)/coverage.txt > $(COVERAGE_DIR)/coverage.xml
 	@rm $(COVERAGE_DIR)/coverage.txt
 
 test-unit:
 	@mkdir -p $(UNIT_DIR)
 	@go test -v $$(go list ./... | grep -v vendor/ | grep -v mock) | tee $(UNIT_DIR)/test.out
-	@go2xunit -fail -input $(UNIT_DIR)/test.out -output $(UNIT_DIR)/xunit.xml
 	@rm $(UNIT_DIR)/test.out
 
 tools:
