@@ -38,18 +38,20 @@ type ChartConfig struct {
 	Version   string                 `mapstructure:"version"`
 }
 
-// ChartLongName returns the name for the chart with version
-func (c ChartConfig) ChartLongName() string {
-	extra := ""
-	if len(c.Version) > 0 {
-		extra = "-" + c.Version
+// ChartURL returns a URL related to the given repo and name of the chart based off of
+// criteria 1 through 4 of the following documentation on how to specify local and remote charts
+//
+// 1. By chart reference: helm install mymaria example/mariadb
+// 2. By path to a packaged chart: helm install mynginx ./nginx-1.2.3.tgz
+// 3. By path to an unpacked chart directory: helm install mynginx ./nginx
+// 4. By absolute URL: helm install mynginx https://example.com/charts/nginx-1.2.3.tgz
+//
+func (c ChartConfig) ChartURL() string {
+	// If a repository is given return the c
+	if len(c.Repo) > 0 { 
+		return c.Repo + "/" + c.Name
 	}
-	return c.Repo + "/" + c.Name + extra
-}
-
-// ChartShortName returns the name for the chart without version
-func (c ChartConfig) ChartShortName() string {
-	return c.Repo + "/" + c.Name
+	return c.Name
 }
 
 // WriteValueFile writes the given file containing the Chart's Values
@@ -59,6 +61,5 @@ func (c ChartConfig) WriteValueFile(file string) error {
 	if err != nil {
 		return err
 	}
-
 	return ioutil.WriteFile(file, y, 0644)
 }

@@ -81,7 +81,7 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 		var cmdArgs []string
 		var res Result
 
-		log.Debugf("Processing chart: %s", chart.ChartLongName())
+		log.Debugf("Processing chart: %s", chart.ChartURL())
 
 		if chart.State == config.StatePresent {
 			// Create a temp working directory
@@ -101,7 +101,7 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 
 			cmdArgs = append(cmdArgs, "upgrade")
 			cmdArgs = append(cmdArgs, chart.Release)
-			cmdArgs = append(cmdArgs, chart.ChartShortName())
+			cmdArgs = append(cmdArgs, chart.ChartURL())
 			cmdArgs = append(cmdArgs, "-i")
 
 			if IsHelm2() {

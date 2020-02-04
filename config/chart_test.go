@@ -1,4 +1,4 @@
-// Copyright © 2018 Anthony Spring <aspring@traackr.com>
+// Copyright © 2020 Anthony Spring <anthonyspring@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,35 +27,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBooleanIsNotCoerced(t *testing.T) {
+func TestChartURL_WithRepo(t *testing.T) {
 	viper.SetConfigFile("../test-data/demo.yml")
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 
-	ingressConfig := c.Charts[0].Values["ingress"].(map[string]interface{})
-	assert.Equal(t, ingressConfig["enabled"], true)
+	assert.Equal(t, c.Charts[0].ChartURL(), "stable/concourse")
 }
 
-func TestLoadAndValidateFromViper_Unmarshallable(t *testing.T) {
-	viper.SetConfigFile("../test-data/unmarshallable.yml")
+func TestChartURL_WithoutRepo(t *testing.T) {
+	viper.SetConfigFile("../test-data/without-repo.yml")
 	viper.ReadInConfig()
-	
-	_, err := LoadAndValidateFromViper()
-	assert.NotNil(t, err)
-}
-
-func TestLoadAndValidateFromViper_DefaultChartState(t *testing.T) {
-	viper.SetConfigFile("../test-data/default-state.yml")
-	viper.ReadInConfig()
-	
 	c, _ := LoadAndValidateFromViper()
-	assert.Equal(t, c.Charts[0].State, "present")
-}
 
-func TestLoadAndValidateFromViper_DefaultRepoState(t *testing.T) {
-	viper.SetConfigFile("../test-data/default-state.yml")
-	viper.ReadInConfig()
-	
-	c, _ := LoadAndValidateFromViper()
-	assert.Equal(t, c.Repositories[0].State, "present")
+	assert.Equal(t, c.Charts[0].ChartURL(), "https://github.com/pantsel/konga/blob/master/charts/konga/konga-1.0.0.tgz?raw=true")
 }

@@ -1,0 +1,6 @@
+---
+charts:
+  - name: https://github.com/pantsel/konga/blob/master/charts/konga/konga-1.0.0.tgz?raw=true
+    namespace: kube-system
+    release: konga
+    state: present

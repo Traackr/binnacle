@@ -83,7 +83,7 @@ func diffCmdRun(args ...string) {
 		var cmdArgs []string
 		var res Result
 
-		log.Debugf("Processing chart: %s", chart.ChartLongName())
+		log.Debugf("Processing chart: %s", chart.ChartURL())
 
 		// Create a temp working directory
 		dir, err := ioutil.TempDir("", "binnacle-exec")
@@ -104,7 +104,7 @@ func diffCmdRun(args ...string) {
 		cmdArgs = append(cmdArgs, "diff")
 		cmdArgs = append(cmdArgs, "upgrade")
 		cmdArgs = append(cmdArgs, chart.Release)
-		cmdArgs = append(cmdArgs, chart.ChartShortName())
+		cmdArgs = append(cmdArgs, chart.ChartURL())
 		cmdArgs = append(cmdArgs, "--values")
 		cmdArgs = append(cmdArgs, valuesFile)
 

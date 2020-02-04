@@ -7,7 +7,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
-## [0.2.1] - 2020-01-13
+## [0.3.0] - 2020-02-04
+
+Breaking Changes:
+
+- Prior to this release if the `repo` for a chart was not specified it defaulted to `local`.  This default has been changed to an empty string.
+
+Changes:
+
+- Added the ability to reference a chart on the local file system or URL.  To utilize this functionality leave the repo empty for a chart and pass the necessary path/URL as the `name` of the chart.
+
+```yaml
+charts:
+  - name: https://github.com/pantsel/konga/blob/master/charts/konga/konga-1.0.0.tgz?raw=true
+    namespace: kube-system
+    release: konga
+    state: present
+```
+
+This example shows the `repo` has been omitted and the name pointing to a URL used to access the desired version of the chart.
+
+## [0.2.1] - 2020-01-129
 
 - Remove the explicit '--force' from the command passed to helm3 upgrade during a `binnacle sync`.
 
@@ -54,7 +74,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/traackr/binnacle/tree/0.3.0
+[0.2.1]: https://github.com/traackr/binnacle/tree/0.2.1
+[0.2.0]: https://github.com/traackr/binnacle/tree/0.2.0
 [0.1.0]: https://github.com/traackr/binnacle/tree/0.1.0
 [0.0.5]: https://github.com/traackr/binnacle/tree/0.0.5
 [0.0.4]: https://github.com/traackr/binnacle/tree/0.0.4

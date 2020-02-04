@@ -70,7 +70,7 @@ func statusCmdRun(args ...string) {
 		var cmdArgs []string
 		var res Result
 
-		log.Debugf("Processing chart: %s", chart.ChartLongName())
+		log.Debugf("Processing chart: %s", chart.ChartURL())
 
 		cmdArgs = append(cmdArgs, "status")
 		cmdArgs = append(cmdArgs, chart.Release)

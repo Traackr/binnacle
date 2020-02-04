@@ -71,7 +71,7 @@ func templateCmdRun(args ...string) {
 		var cmdArgs []string
 		var res Result
 
-		log.Debugf("Processing chart: %s", chart.ChartLongName())
+		log.Debugf("Processing chart: %s", chart.ChartURL())
 
 		//
 		// ORANGE: This loop should evaluate the state of the chart
@@ -89,32 +89,26 @@ func templateCmdRun(args ...string) {
 		var valuesFile = dir + "/values.yml"
 
 		//
-		// In order to template against a chart, we need the
-		// chart to exist locally first.  This will fetch the chart,
-		// untar it and make it availble for the template command
+		// Fetch the chart for helm2
 		//
+		if IsHelm2() {
+			cmdArgs = append(cmdArgs, "fetch")
+			cmdArgs = append(cmdArgs, chart.ChartURL())
+			cmdArgs = append(cmdArgs, "--destination")
+			cmdArgs = append(cmdArgs, dir)
 
-		//
-		// Fetch the chart
-		//
+			cmdArgs = append(cmdArgs, "--untar")
 
-		cmdArgs = append(cmdArgs, "fetch")
-		cmdArgs = append(cmdArgs, chart.ChartShortName())
+			if len(chart.Version) > 0 {
+				cmdArgs = append(cmdArgs, "--version")
+				cmdArgs = append(cmdArgs, chart.Version)
+			}
 
-		cmdArgs = append(cmdArgs, "--destination")
-		cmdArgs = append(cmdArgs, dir)
-
-		cmdArgs = append(cmdArgs, "--untar")
-
-		if len(chart.Version) > 0 {
-			cmdArgs = append(cmdArgs, "--version")
-			cmdArgs = append(cmdArgs, chart.Version)
-		}
-
-		res, err = RunHelmCommand(cmdArgs...)
-		if err != nil {
-			log.Errorf("helm fetch failed with the following:")
-			log.Fatal(res.Stderr)
+			res, err = RunHelmCommand(cmdArgs...)
+			if err != nil {
+				log.Errorf("helm fetch failed with the following:")
+				log.Fatal(res.Stderr)
+			}
 		}
 
 		//
@@ -150,7 +144,7 @@ func templateCmdRun(args ...string) {
 			cmdArgs = append(cmdArgs, chart.Release)
 
 			// CHART
-			cmdArgs = append(cmdArgs, dir+"/"+chart.Name)
+			cmdArgs = append(cmdArgs, chart.ChartURL())
 
 			// Add the namespace if given
 			if len(chart.Namespace) > 0 {

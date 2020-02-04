@@ -56,7 +56,7 @@ func LoadAndValidateFromViper() (*BinnacleConfig, error) {
 		chart := &config.Charts[idx]
 
 		if len(chart.Repo) == 0 {
-			chart.Repo = "local"
+			chart.Repo = ""
 		}
 
 		if len(chart.State) == 0 {
