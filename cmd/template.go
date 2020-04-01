@@ -61,7 +61,7 @@ func templateCmdRun(args ...string) {
 	if err != nil {
 		log.Fatalf("unable to load configuration: %v", err)
 	}
-	
+
 	var charts = c.Charts
 
 	log.Debugf("Loaded %d charts.", len(charts))
@@ -154,6 +154,11 @@ func templateCmdRun(args ...string) {
 
 			cmdArgs = append(cmdArgs, "--values")
 			cmdArgs = append(cmdArgs, valuesFile)
+
+			if len(chart.Version) > 0 {
+				cmdArgs = append(cmdArgs, "--version")
+				cmdArgs = append(cmdArgs, chart.Version)
+			}
 		}
 
 		cmdArgs = append(cmdArgs, args...)

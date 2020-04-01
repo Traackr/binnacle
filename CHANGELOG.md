@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.3.1] - 2020-04-01
+
+Fixes:
+
+- When generating a template the chart version was not properly provided for Helm3.
+
 ## [0.3.0] - 2020-02-04
 
 Breaking Changes:
@@ -74,7 +80,8 @@ This example shows the `repo` has been omitted and the name pointing to a URL us
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/traackr/binnacle/tree/0.3.1
 [0.3.0]: https://github.com/traackr/binnacle/tree/0.3.0
 [0.2.1]: https://github.com/traackr/binnacle/tree/0.2.1
 [0.2.0]: https://github.com/traackr/binnacle/tree/0.2.0
