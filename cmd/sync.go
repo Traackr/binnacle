@@ -147,6 +147,8 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 }
 
 func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
+	var reposModified = false
+
 	for _, repo := range repos {
 		var cmdArgs []string
 		var err error
@@ -189,9 +191,26 @@ func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
 				fmt.Println(strings.TrimSpace(res.Stderr))
 				return err
 			}
+			reposModified = true
 
 			fmt.Println(strings.TrimSpace(res.Stdout))
 		}
+	}
+
+	// If any repos have been added during this sync execute a helm repos update to update the cache.
+	if reposModified {
+		var cmdArgs []string
+		var err error
+		var res Result
+
+		cmdArgs = append(cmdArgs, "repo")
+		cmdArgs = append(cmdArgs, "update")
+		res, err = RunHelmCommand(cmdArgs...)
+		if err != nil {
+			fmt.Println(strings.TrimSpace(res.Stderr))
+			return err
+		}
+		fmt.Println(strings.TrimSpace(res.Stdout))
 	}
 
 	return nil
