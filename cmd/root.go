@@ -110,9 +110,12 @@ func rootCmdPersistentPreRun(cmd *cobra.Command) {
 	viper.AutomaticEnv()     // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
+	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println("Loading config file:", viper.ConfigFileUsed())
+		fmt.Printf("  %s.  Exiting!\n", err)
+		os.Exit(-1)
 	}
+	fmt.Println("Loading config file:", viper.ConfigFileUsed())
 
 	// Initialize the logger for all commands to use
 	logLevel, _ := logrus.ParseLevel(viper.GetString("loglevel"))
