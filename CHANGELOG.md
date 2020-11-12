@@ -13,6 +13,8 @@ Changes:
 
 - Previously when syncing a configuration file containing repositories and charts, there was no way to utilize newly added charts in a single run because a `helm repo update` needed to be executed after the repositories were added.  A call to `helm repo update` has been added whenever a new repository is added.
 
+- Binnacles whose state is set to absent will no longer be rendered via the `template` command.
+
 Fixes:
 
 - Invalid configuration files were not properly reported as errors to the user.  This has been corrected.

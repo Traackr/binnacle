@@ -64,6 +64,8 @@ func templateCmdRun(args ...string) {
 
 	var charts = c.Charts
 
+	var absentCharts []string
+
 	log.Debugf("Loaded %d charts.", len(charts))
 
 	// Iterate the charts in the config
@@ -73,11 +75,11 @@ func templateCmdRun(args ...string) {
 
 		log.Debugf("Processing chart: %s", chart.ChartURL())
 
-		//
-		// ORANGE: This loop should evaluate the state of the chart
-		// and if the state isnt present, let the user know
-		// that the chart will be deleted if released.
-		//
+		// If the state is not set to present add the namespace/release to the not rendered list
+		if chart.State != config.StatePresent {
+			absentCharts = append(absentCharts, chart.Namespace + "/" + chart.Release)
+			continue
+		}
 
 		// Create a temp working directory
 		dir, err := ioutil.TempDir("", "binnacle-exec")
@@ -170,6 +172,14 @@ func templateCmdRun(args ...string) {
 		}
 
 		fmt.Println(strings.TrimSpace(res.Stdout))
+	}
+
+	// Display output about the released that were not rendered
+	if len(absentCharts) > 0 {
+		log.Info("The following releases were set to absent and were not rendered.")
+		for _, chart := range absentCharts {
+			log.Infof("  %s", chart)
+		}
 	}
 }
 
