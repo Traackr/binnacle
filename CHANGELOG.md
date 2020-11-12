@@ -7,6 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.4.0] - Pending
+
+Changes:
+
+- Previously when syncing a configuration file containing repositories and charts, there was no way to utilize newly added charts in a single run because a `helm repo update` needed to be executed after the repositories were added.  A call to `helm repo update` has been added whenever a new repository is added.
+
+Fixes:
+
+- Invalid configuration files were not properly reported as errors to the user.  This has been corrected.
+
 ## [0.3.1] - 2020-04-01
 
 Fixes:
@@ -80,7 +90,8 @@ This example shows the `repo` has been omitted and the name pointing to a URL us
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/traackr/binnacle/tree/0.4.0
 [0.3.1]: https://github.com/traackr/binnacle/tree/0.3.1
 [0.3.0]: https://github.com/traackr/binnacle/tree/0.3.0
 [0.2.1]: https://github.com/traackr/binnacle/tree/0.2.1
