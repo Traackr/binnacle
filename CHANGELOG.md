@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
-## [0.4.0] - Pending
+## [0.4.0] - 2020-11-12
 
 Changes:
 
