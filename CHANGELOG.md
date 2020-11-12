@@ -15,6 +15,8 @@ Changes:
 
 - Binnacles whose state is set to absent will no longer be rendered via the `template` command.
 
+- Introduced logic that checks to see if a release exists prior to attempting to remove the release.
+
 Fixes:
 
 - Invalid configuration files were not properly reported as errors to the user.  This has been corrected.

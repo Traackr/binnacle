@@ -190,6 +190,22 @@ func PluginInstalled(plugin string) (bool, error) {
 	return false, nil
 }
 
+func ReleaseExists(namespace string, release string) (bool) {
+	var exists = true
+	var err error
+	var res Result
+
+	// Get the status of the release for the namespace
+	res, err = RunHelmCommand("status", release, "--namespace", namespace)
+	if err != nil {
+		if res.Stderr != "Error: release: not found" {
+			exists = false
+		}
+	}
+
+	return exists
+}
+
 // RunHelmCommand runs the given command against helm
 func RunHelmCommand(args ...string) (Result, error) {
 	var result Result
