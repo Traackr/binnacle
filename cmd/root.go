@@ -28,6 +28,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/Traackr/binnacle/config"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -128,7 +129,7 @@ func rootCmdRun() {
 }
 
 // IsHelm2 returns true if the provided helm is version 2
-func IsHelm2() (bool) {
+func IsHelm2() bool {
 	var err error
 	var helm2 bool
 	var res Result
@@ -148,7 +149,7 @@ func IsHelm2() (bool) {
 	if helm2 {
 		log.Debugf("Helm 2 detected!")
 	}
-	
+
 	return helm2
 }
 
@@ -190,7 +191,7 @@ func PluginInstalled(plugin string) (bool, error) {
 	return false, nil
 }
 
-func ReleaseExists(namespace string, release string) (bool) {
+func ReleaseExists(namespace string, release string) bool {
 	var exists = true
 	var err error
 	var res Result
@@ -239,4 +240,143 @@ func RunHelmCommand(args ...string) (Result, error) {
 	}
 
 	return result, err
+}
+
+func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
+	var reposModified = false
+
+	for _, repo := range repos {
+		var cmdArgs []string
+		var err error
+		var res Result
+		var currentRepos []config.RepositoryConfig
+
+		log.Debugf("Processing repo: %s", repo.Name)
+
+		currentRepos, err = getCurrentRepositories()
+		if err != nil {
+			return err
+		}
+
+		repoExists, repoFullMatch := repoExists(repo, currentRepos)
+
+		// If the repo exists and is not a full match, or we are deleting the repo - we need to delete the repo
+		if repoExists && (!repoFullMatch || repo.State != config.StatePresent) {
+			cmdArgs = append(cmdArgs, "repo")
+			cmdArgs = append(cmdArgs, "remove")
+			cmdArgs = append(cmdArgs, args...)
+			cmdArgs = append(cmdArgs, repo.Name)
+
+			res, err = RunHelmCommand(cmdArgs...)
+			if err != nil {
+				fmt.Println(strings.TrimSpace(res.Stderr))
+				return err
+			}
+		}
+		cmdArgs = nil
+
+		if repo.State == config.StatePresent {
+			cmdArgs = append(cmdArgs, "repo")
+			cmdArgs = append(cmdArgs, "add")
+			cmdArgs = append(cmdArgs, args...)
+			cmdArgs = append(cmdArgs, repo.Name)
+			cmdArgs = append(cmdArgs, repo.URL)
+
+			res, err = RunHelmCommand(cmdArgs...)
+			if err != nil {
+				fmt.Println(strings.TrimSpace(res.Stderr))
+				return err
+			}
+			reposModified = true
+
+			fmt.Println(strings.TrimSpace(res.Stdout))
+		}
+	}
+
+	// If any repos have been added during this sync execute a helm repos update to update the cache.
+	if reposModified {
+		var cmdArgs []string
+		var err error
+		var res Result
+
+		cmdArgs = append(cmdArgs, "repo")
+		cmdArgs = append(cmdArgs, "update")
+		res, err = RunHelmCommand(cmdArgs...)
+		if err != nil {
+			fmt.Println(strings.TrimSpace(res.Stderr))
+			return err
+		}
+		fmt.Println(strings.TrimSpace(res.Stdout))
+	}
+
+	return nil
+}
+
+func getCurrentRepositories() ([]config.RepositoryConfig, error) {
+	var err error
+	var output []string
+	var repos []config.RepositoryConfig
+	var res Result
+
+	// Get a list of currently configured repositories
+	res, err = RunHelmCommand("repo", "list")
+	if err != nil {
+		fmt.Println(strings.TrimSpace(res.Stderr))
+		return nil, err
+	}
+
+	// Split the output on the new line
+	output = strings.Split(res.Stdout, "\n")
+
+	// Remove the column titles
+	if len(output) > 0 {
+		output = output[1:]
+	}
+
+	// Populate the repos
+	for _, line := range output {
+		var repo config.RepositoryConfig
+
+		if len(line) == 0 {
+			continue
+		}
+
+		// Split the string by a space
+		split := strings.Fields(line)
+
+		// Build the repository config
+		repo.Name = split[0]
+		repo.URL = split[1]
+
+		repos = append(repos, repo)
+	}
+
+	return repos, nil
+}
+
+func repoExists(repo config.RepositoryConfig, repos []config.RepositoryConfig) (bool, bool) {
+	var exists = false
+	var fullMatch = false
+
+	// Check if this repo already exists
+	for _, checkRepo := range repos {
+		// Check if the repos are equal
+		if repo.Equal(checkRepo) {
+			exists = true
+			fullMatch = true
+			break
+		} else {
+			// Check if their names match but URLs are different
+			if repo.Name == checkRepo.Name {
+				exists = true
+				if repo.URL != checkRepo.URL {
+					fullMatch = true
+				}
+				break
+			}
+		}
+
+	}
+
+	return exists, fullMatch
 }

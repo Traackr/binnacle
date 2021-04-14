@@ -74,6 +74,11 @@ func diffCmdRun(args ...string) {
 		log.Fatalf("unable to load configuration: %v", err)
 	}
 
+	// Sync repositories
+	if err := syncRepositories(c.Repositories, args...); err != nil {
+		log.Fatal(err)
+	}
+
 	var charts = c.Charts
 
 	log.Debugf("Loaded %d charts.", len(charts))
