@@ -18,6 +18,10 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: go/src/github.com/Traackr/binnacle
+    - name: Test
+      run: go test -v ./...
+      env:
+        GOPATH: ${{ github.workspace }}/go
     - name: Build
       run: make -C go/src/github.com/Traackr/binnacle build
       env:
@@ -25,7 +29,7 @@ jobs:
         GENERATE_PACKAGES: true
         GOPATH: ${{ github.workspace }}/go
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@35d938c
       with:
         files: |
           "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
