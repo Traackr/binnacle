@@ -28,7 +28,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          "go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
-          "go/src/github.com/Traackr/binnacle/pkg/SHA256SUM.txt"
+          "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
+          "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/SHA256SUM.txt"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
