@@ -18,6 +18,8 @@ Changes:
 Changes:
 
 - Repositories listed under the `repositories` key are now added/updated for the `template` and `diff` commands. Previously, these repositories were only used when running `sync`.
+- Due to build issues, this release was never created. 0.5.1 supersedes it
+
 
 ## [0.4.0] - 2020-11-12
 
@@ -106,7 +108,8 @@ This example shows the `repo` has been omitted and the name pointing to a URL us
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/traackr/binnacle/tree/0.5.1
 [0.4.0]: https://github.com/traackr/binnacle/tree/0.4.0
 [0.3.1]: https://github.com/traackr/binnacle/tree/0.3.1
 [0.3.0]: https://github.com/traackr/binnacle/tree/0.3.0
