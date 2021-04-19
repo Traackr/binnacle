@@ -1,0 +1,33 @@
+name: Release
+
+# Trigger only when a tag is pushed
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.10.1
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: go/src/github.com/Traackr/binnacle
+    - name: Build
+      run: make build
+      env:
+        TARGETS: release
+        GOPATH: ${{ github.workspace }}/go
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          "pkg/binnacle-*.tar.gz"
+          "pkg/SHA256SUM.txt"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
