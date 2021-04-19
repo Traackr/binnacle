@@ -30,5 +30,6 @@ jobs:
         files: |
           "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
           "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/SHA256SUM.txt"
+        fail_on_unmatched_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
