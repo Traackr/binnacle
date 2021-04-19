@@ -29,7 +29,7 @@ jobs:
         GENERATE_PACKAGES: true
         GOPATH: ${{ github.workspace }}/go
     - name: Release
-      uses: softprops/action-gh-release@35d938c
+      uses: softprops/action-gh-release@35d938cf01f60fbe522917c81be1e892074f6ad6
       with:
         files: |
           "${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
