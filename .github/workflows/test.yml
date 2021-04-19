@@ -15,5 +15,9 @@ jobs:
         go-version: ${{ matrix.go-version }}
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        path: go/src/github.com/Traackr/binnacle
     - name: Test
       run: go test -v ./...
+      env:
+        GOPATH: ${{ github.workspace }}/go
