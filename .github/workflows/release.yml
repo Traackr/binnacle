@@ -19,15 +19,16 @@ jobs:
       with:
         path: go/src/github.com/Traackr/binnacle
     - name: Build
-      run: make build
+      run: make -C go/src/github.com/Traackr/binnacle build
       env:
         TARGETS: release
+        GENERATE_PACKAGES: true
         GOPATH: ${{ github.workspace }}/go
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          "pkg/binnacle-*.tar.gz"
-          "pkg/SHA256SUM.txt"
+          "go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz"
+          "go/src/github.com/Traackr/binnacle/pkg/SHA256SUM.txt"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
