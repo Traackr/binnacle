@@ -87,7 +87,7 @@ test-coverage:
 
 test-unit:
 	@mkdir -p $(UNIT_DIR)
-	@go test -v $$(go list ./... | grep -v vendor/ | grep -v mock) | tee $(UNIT_DIR)/test.out
+	@go test -v ./... | tee $(UNIT_DIR)/test.out
 	@rm $(UNIT_DIR)/test.out
 
 tools:
