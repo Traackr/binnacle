@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.5.1] - 2021-04-19
+
+Changes:
+
+- Use Github Actions for releases
+
 ## [0.5.0] - 2021-04-19
 
 Changes:
