@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.5.0] - 2021-04-19
+
+Changes:
+
+- Repositories listed under the `repositories` key are now added/updated for the `template` and `diff` commands. Previously, these repositories were only used when running `sync`.
+
 ## [0.4.0] - 2020-11-12
 
 Changes:
