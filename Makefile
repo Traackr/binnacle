@@ -96,11 +96,6 @@ tools:
 		go get $$tool; \
 	done
 
-travis: test-unit build
-
-.travis-sed:
-	gofmt -w -r '"github.com/traackr/binnacle/cmd" -> "github.com/Traackr/binnacle/cmd"' main.go
-
 version:
 	@if [ -e $(VERSION_FILE) ]; then \
 		echo "$$VERSION"; \
