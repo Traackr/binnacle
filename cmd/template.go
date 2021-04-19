@@ -62,6 +62,11 @@ func templateCmdRun(args ...string) {
 		log.Fatalf("unable to load configuration: %v", err)
 	}
 
+	// Sync repositories
+	if err := syncRepositories(c.Repositories, args...); err != nil {
+		log.Fatal(err)
+	}
+
 	var charts = c.Charts
 
 	var absentCharts []string
@@ -77,7 +82,7 @@ func templateCmdRun(args ...string) {
 
 		// If the state is not set to present add the namespace/release to the not rendered list
 		if chart.State != config.StatePresent {
-			absentCharts = append(absentCharts, chart.Namespace + "/" + chart.Release)
+			absentCharts = append(absentCharts, chart.Namespace+"/"+chart.Release)
 			continue
 		}
 
