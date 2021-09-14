@@ -122,7 +122,7 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 		} else {
 
 			// If the release does not exist do not attempt to delete the release
-			exists := ReleaseExists(chart.Namespace, chart.Release)
+			exists := ReleaseExists(chart.Namespace, chart.Release, args...)
 			if !exists {
 				log.Infof("Skipping '%s/%s' as the release does not exist.", chart.Namespace, chart.Release)
 				continue
