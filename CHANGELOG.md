@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - None at this time.
 
+## [0.6.0] - 2021-09-14
+
+Changes:
+
+- Forward args to the ReleaseExists function and to Helm
+
 ## [0.5.1] - 2021-04-19
 
 Changes:
