@@ -1,7 +1,5 @@
 github.com/BurntSushi/toml v0.2.0 h1:OthAm9ZSUx4uAmn3WbPwc06nowWrByRwBsYRhbmFjBs=
 github.com/BurntSushi/toml v0.2.0/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/cpuguy83/go-md2man v1.0.9-0.20180215021727-48d8747a2ca1 h1:ElayFqEP25dH3OBk0+SPM3B+k/g0iussQgBucpVfl8g=
-github.com/cpuguy83/go-md2man v1.0.9-0.20180215021727-48d8747a2ca1/go.mod h1:N6JayAiVKtlHSnuTCeuLSQVs75hb8q+dYQLjr7cDsKY=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/fsnotify/fsnotify v1.3.0 h1:XyNoRE4PlEAzjaHYBqJuJC18jNWyfDVJ2jwD5kCuwXs=
@@ -23,8 +21,6 @@ github.com/mitchellh/mapstructure v0.0.0-20160212031839-d2dd02622084 h1:Z2EJ6SUY
 github.com/mitchellh/mapstructure v0.0.0-20160212031839-d2dd02622084/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
-github.com/russross/blackfriday v1.6.0 h1:KqfZb0pUVN2lYqZUYRddxF4OR8ZMURnJIG5Y3VRLtww=
-github.com/russross/blackfriday v1.6.0/go.mod h1:ti0ldHuxg49ri4ksnFxlkCfN+hvslNlmVHqNRXXJNAY=
 github.com/sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056 h1:q2l3xYjnH4L609UcsgkKo3UfXHlj6vbxbXbtMKlGl8s=
 github.com/sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=
 github.com/spf13/cast v0.0.0-20160314192028-27b586b42e29 h1:Lgc6pP3ludnufG3ehP2WboB0IIKxlizm8NvXsI0/Z58=

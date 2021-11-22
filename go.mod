@@ -12,7 +12,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.2.0 // indirect
-	github.com/cpuguy83/go-md2man v1.0.9-0.20180215021727-48d8747a2ca1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.3.0 // indirect
 	github.com/hashicorp/hcl v0.0.0-20160413172542-27a57f2605e0 // indirect
@@ -22,7 +21,6 @@ require (
 	github.com/magiconair/properties v1.7.0 // indirect
 	github.com/mitchellh/mapstructure v0.0.0-20160212031839-d2dd02622084 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/russross/blackfriday v1.6.0 // indirect
 	github.com/spf13/cast v0.0.0-20160314192028-27b586b42e29 // indirect
 	github.com/spf13/jwalterweatherman v0.0.0-20160311093646-33c24e77fb80 // indirect
 	github.com/spf13/pflag v0.0.0-20160413144353-8f6a28b09165 // indirect
