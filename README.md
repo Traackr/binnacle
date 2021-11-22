@@ -1,4 +1,4 @@
-# binnacle [![Release][release-image]][release-url] [![Build Status][travis-image]][travis-url]
+# binnacle [![Release][release-image]][release-url] [![Test](https://github.com/Traackr/binnacle/actions/workflows/test.yml/badge.svg)](https://github.com/Traackr/binnacle/actions/workflows/test.yml)
 
 `binnacle` is an opinionated automation tool used to interact with Kubernetes' [Helm][helm].  By offering a single file to manage one or many charts, you can easily control all aspects of your Helm managed applications.
 
