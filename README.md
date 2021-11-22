@@ -59,10 +59,6 @@ repositories:
     state: present
 ```
 
-### Commands
-
-Documentation for all of the commands within `binnacle` are available [here][commands].
-
 ### Using Binnacle
 
 The standard workflow when using binnacle is to use the [template][command-template] command to verify the desired configuration files are generated, use the [sync][command-sync] command to create/update the existing release configuration within Helm, and [status][command-status] to get the status of a release.
