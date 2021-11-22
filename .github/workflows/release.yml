@@ -10,30 +10,39 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Cache Go Dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
     - name: Install Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.10.1
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        path: go/src/github.com/Traackr/binnacle
+        go-version: 1.17.3
+
     - name: Test
       run: go test -v ./...
-      env:
-        GOPATH: ${{ github.workspace }}/go
+
     - name: Build
-      run: make -C go/src/github.com/Traackr/binnacle build
+      run: make build
       env:
         TARGETS: release
         GENERATE_PACKAGES: true
-        GOPATH: ${{ github.workspace }}/go
+
     - name: Release
       uses: softprops/action-gh-release@35d938cf01f60fbe522917c81be1e892074f6ad6
       with:
         files: |
-          ${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/binnacle-*.tar.gz
-          ${{ github.workspace }}/go/src/github.com/Traackr/binnacle/pkg/SHA256SUM.txt
+          pkg/binnacle-*.tar.gz
+          pkg/SHA256SUM.txt
         fail_on_unmatched_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

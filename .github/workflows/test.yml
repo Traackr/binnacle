@@ -5,19 +5,30 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.10.1]
+        go-version: [1.17.3]
         os: [ubuntu-20.04, macos-10.15, macos-11]
     runs-on: ${{ matrix.os }}
+
     steps:
     - name: Install Go
       uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
+
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Cache Go Dependencies
+      uses: actions/cache@v2
       with:
-        path: go/src/github.com/Traackr/binnacle
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+          ~/Library/Caches/go-build
+          %LocalAppData%\go-build
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
     - name: Test
       run: go test -v ./...
-      env:
-        GOPATH: ${{ github.workspace }}/go
