@@ -37,7 +37,6 @@ shasum256() {
 # Compile Configuration
 #
 
-DARWIN_CGO_ENABLED=0
 GIT_COMMIT="$(git rev-parse --short HEAD)"
 GIT_DIRTY="$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
 EXTLDFLAGS="-X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.GITCOMMIT=${GIT_COMMIT}${GIT_DIRTY} -X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.VERSION=$VERSION"
@@ -52,24 +51,10 @@ targets="$LOCAL_TARGET"
 
 # If we are building for release change targets based off of environment
 if [[ "$TARGETS" == "release" ]]; then
-  if [[ $(uname) == "Linux" ]]; then
-    targets="darwin_amd64 linux_amd64 linux_amd64-lxc windows_amd64"
-  elif [[ $(uname) == "Darwin" ]]; then
-    targets="darwin_amd64 linux_amd64 linux_amd64-lxc"
-  else
-    echo "Unable to build on $(uname). Use Linux or Darwin."
-    exit 1
-  fi
+  targets="darwin_amd64 darwin_arm64 linux_amd64 linux_amd64-lxc windows_amd64"
 elif [[ "$TARGETS" != "" ]]; then
   targets="$TARGETS"
 fi
-
-# Enable CGO_ENABLED when building for darwin on darwin
-if [[ $(uname) == "Darwin" ]]; then
-  DARWIN_CGO_ENABLED=1
-fi
-
-set +e
 
 for target in $targets; do
   case $target in
@@ -77,6 +62,11 @@ for target in $targets; do
       echo "==> Building darwin amd64..."
       CGO_ENABLED=$DARWIN_CGO_ENABLED GOARCH="amd64" GOOS="darwin" \
         go build -ldflags "$EXTLDFLAGS" -o "pkg/darwin_amd64/$PACKAGE"
+      ;;
+    "darwin_arm64")
+      echo "==> Building darwin arm64..."
+      CGO_ENABLED=$DARWIN_CGO_ENABLED GOARCH="arm64" GOOS="darwin" \
+        go build -ldflags "$EXTLDFLAGS" -o "pkg/darwin_arm64/$PACKAGE"
       ;;
     "linux_amd64")
       echo "==> Building linux amd64..."
