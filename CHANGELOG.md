@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade to go 1.17.3
 - Use go modules instead of govendor
 - Add Darwin ARM64 as a build target to generate an artifact for M1 Macs
+- Remove code for building in Docker and generating docs
 
 ## [0.6.0] - 2021-09-14
 
