@@ -61,7 +61,7 @@ repositories:
 
 ### Using Binnacle
 
-The standard workflow when using binnacle is to use the [template][command-template] command to verify the desired configuration files are generated, use the [sync][command-sync] command to create/update the existing release configuration within Helm, and [status][command-status] to get the status of a release.
+The standard workflow when using binnacle is to use the `template` command to verify the desired configuration files are generated, use the `sync` command to create/update the existing release configuration within Helm, and `status` to get the status of a release.
 
 Using the configuration available at `test-data/demo.yml` you can run the template command:
 
@@ -82,7 +82,7 @@ metadata:
 ...
 ```
 
-By reviewing the output you are able to verify that you have specificied all of the necessary configuration aspects of the chart.  Once you are happy with how the chart is configured you can [sync][command-sync] the charts to Helm:
+By reviewing the output you are able to verify that you have specificied all of the necessary configuration aspects of the chart.  Once you are happy with how the chart is configured you can `sync` the charts to Helm:
 
 ```bash
 
@@ -180,7 +180,7 @@ NOTES:
 You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
 ```
 
-From the output you can see that the release did not exist "apps-concourse" so Helm created it.  To get updates on the status of the deployment you can use the [status][command-status] command:
+From the output you can see that the release did not exist "apps-concourse" so Helm created it.  To get updates on the status of the deployment you can use the `status` command:
 
 ```bash
 
@@ -275,7 +275,7 @@ NOTES:
 You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatibility reasons, but is very space inefficient, and should be changed to either "btrfs" (recommended) or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 and https://github.com/concourse/concourse/issues/1966 for background.
 ```
 
-If you want to remove a release, you can change the `state` from `present` to `absent` and run the [sync][command-sync] command:
+If you want to remove a release, you can change the `state` from `present` to `absent` and run the `sync` command:
 
 ```bash
 $ binnacle sync -c ./test-data/demo.yml 
@@ -355,10 +355,6 @@ To run the unit tests with coverage reports:
 make docker-test-coverage
 ```
 
-[command-status]: docs/commands/binnacle_status.md
-[command-sync]: docs/commands/binnacle_sync.md
-[command-template]: docs/commands/binnacle_template.md
-[commands]: docs/commands/binnacle.md
 [docker]: https://www.docker.com
 [github-releases]: https://github.com/Traackr/binnacle/releases
 [go]: https://www.golang.org/
