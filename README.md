@@ -289,15 +289,15 @@ release "apps-concourse" deleted
 
 ## Development
 
-To ease the entry of building `binnacle` there are two methods supported by the local Makefile.  The first is for a fully installed and configured [Go][go] (version 1.8+) environment on your machine, and the second requires only that docker be installed.
+Prerequisites:
+
+- go 1.17
 
 ### Local Go Environment
 
-You will first want to check out this repository into your GOPATH:
+First, check out the repository:
 
 ```script
-mkdir -p "$GOPATH/src/github.com/Traackr"
-cd "$GOPATH/src/github.com/Traackr"
 git clone https://github.com/Traackr/binnacle.git
 cd binnacle
 ```
@@ -305,7 +305,7 @@ cd binnacle
 To compile a version of binnacle for your local machine you can run:
 
 ```script
-make
+make build
 ```
 
 This will generate a binary within the ./bin directory of the project.
@@ -313,54 +313,11 @@ This will generate a binary within the ./bin directory of the project.
 To run the unit tests:
 
 ```script
-make test-unit
+make test
 ```
 
-To run the unit tests with coverage reports:
-
-```script
-make test-coverage
-```
-
-### Local Docker Environment
-
-Using a local [Docker][docker] environment for building runs the exact same commands as local development, they just happen to be run inside of the container.
-
-To leverage the docker build environment you will first want to check out this repository into a directory of your choice.  In the example below there is an environment variable named `DEVELOPMENT` where all development files are stored.
-
-```script
-mkdir -p "$DEVELOPMENT/Traackr"
-cd "$DEVELOPMENT/Traackr"
-git clone https://github.com/Traackr/binnacle.git
-cd binnacle
-```
-
-To compile a version of binnacle for your local machine you can run:
-
-```script
-make docker-build
-```
-
-This will generate a binary within the ./bin directory of the project.
-
-To run the unit tests:
-
-```script
-make docker-test-unit
-```
-
-To run the unit tests with coverage reports:
-
-```script
-make docker-test-coverage
-```
-
-[docker]: https://www.docker.com
 [github-releases]: https://github.com/Traackr/binnacle/releases
-[go]: https://www.golang.org/
 [helm]: https://helm.sh/
 [helmfile]: https://github.com/roboll/helmfile
 [release-url]: https://github.com/Traackr/binnacle/releases/latest
 [release-image]: https://img.shields.io/github/release/Traackr/binnacle.svg
-[travis-url]: https://travis-ci.org/Traackr/binnacle
-[travis-image]: https://travis-ci.org/Traackr/binnacle.svg?branch=master
