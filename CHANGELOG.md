@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- None at this time.
+- Pass chart namespace for diff and status commands
 
 ## [0.7.0] - 2021-11-22
 

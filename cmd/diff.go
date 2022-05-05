@@ -113,6 +113,11 @@ func diffCmdRun(args ...string) {
 		cmdArgs = append(cmdArgs, "--values")
 		cmdArgs = append(cmdArgs, valuesFile)
 
+		if len(chart.Namespace) > 0 {
+			cmdArgs = append(cmdArgs, "--namespace")
+			cmdArgs = append(cmdArgs, chart.Namespace)
+		}
+
 		if len(chart.Version) > 0 {
 			cmdArgs = append(cmdArgs, "--version")
 			cmdArgs = append(cmdArgs, chart.Version)
