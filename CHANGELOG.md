@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Remove support for Helm 2
+- Upgrade to go 1.18.1
 
 ## [0.7.1] - 2022-05-05
 
