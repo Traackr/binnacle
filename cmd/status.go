@@ -76,6 +76,11 @@ func statusCmdRun(args ...string) {
 		cmdArgs = append(cmdArgs, chart.Release)
 		cmdArgs = append(cmdArgs, args...)
 
+		if len(chart.Namespace) > 0 {
+			cmdArgs = append(cmdArgs, "--namespace")
+			cmdArgs = append(cmdArgs, chart.Namespace)
+		}
+
 		res, err = RunHelmCommand(cmdArgs...)
 		if err != nil {
 			log.Errorf("helm status for release %s failed with the following:", chart.Release)
