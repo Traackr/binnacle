@@ -128,31 +128,6 @@ func rootCmdRun() {
 	// This is here as a no-op to allow `binnacle --version` to work correctly
 }
 
-// IsHelm2 returns true if the provided helm is version 2
-func IsHelm2() bool {
-	var err error
-	var helm2 bool
-	var res Result
-
-	// helm version 2 - Client: &version.Version{SemVer:"v2.16.0", GitCommit:"e13bc94621d4ef666270cfbe734aaabf342a49bb", GitTreeState:"clean"}
-	// helm version 3 - version.BuildInfo{Version:"v3.0.2", GitCommit:"19e47ee3283ae98139d98460de796c1be1e3975f", GitTreeState:"clean", GoVersion:"go1.13.5"}
-
-	// Get a list of currently installed plugins
-	res, err = RunHelmCommand("version")
-	if err != nil {
-		fmt.Println(strings.TrimSpace(res.Stderr))
-		os.Exit(-1)
-	}
-
-	// Check if the output contains the helm2 identifying string
-	helm2 = strings.Contains(res.Stdout, "Client: &version.Version{SemVer:\"v2")
-	if helm2 {
-		log.Debugf("Helm 2 detected!")
-	}
-
-	return helm2
-}
-
 // PluginInstalled returns if the given plugin is installed
 func PluginInstalled(plugin string) (bool, error) {
 	var err error

@@ -96,29 +96,6 @@ func templateCmdRun(args ...string) {
 		var valuesFile = dir + "/values.yml"
 
 		//
-		// Fetch the chart for helm2
-		//
-		if IsHelm2() {
-			cmdArgs = append(cmdArgs, "fetch")
-			cmdArgs = append(cmdArgs, chart.ChartURL())
-			cmdArgs = append(cmdArgs, "--destination")
-			cmdArgs = append(cmdArgs, dir)
-
-			cmdArgs = append(cmdArgs, "--untar")
-
-			if len(chart.Version) > 0 {
-				cmdArgs = append(cmdArgs, "--version")
-				cmdArgs = append(cmdArgs, chart.Version)
-			}
-
-			res, err = RunHelmCommand(cmdArgs...)
-			if err != nil {
-				log.Errorf("helm fetch failed with the following:")
-				log.Fatal(res.Stderr)
-			}
-		}
-
-		//
 		// Template out the charts values
 		//
 		if err = chart.WriteValueFile(valuesFile); err != nil {
@@ -132,40 +109,24 @@ func templateCmdRun(args ...string) {
 
 		cmdArgs = append(cmdArgs, "template")
 
-		if IsHelm2() {
-			cmdArgs = append(cmdArgs, dir+"/"+chart.Name)
+		// NAME
+		cmdArgs = append(cmdArgs, chart.Release)
 
-			// Add the namespace if given
-			if len(chart.Namespace) > 0 {
-				cmdArgs = append(cmdArgs, "--namespace")
-				cmdArgs = append(cmdArgs, chart.Namespace)
-			}
+		// CHART
+		cmdArgs = append(cmdArgs, chart.ChartURL())
 
-			cmdArgs = append(cmdArgs, "--name")
-			cmdArgs = append(cmdArgs, chart.Release)
+		// Add the namespace if given
+		if len(chart.Namespace) > 0 {
+			cmdArgs = append(cmdArgs, "--namespace")
+			cmdArgs = append(cmdArgs, chart.Namespace)
+		}
 
-			cmdArgs = append(cmdArgs, "--values")
-			cmdArgs = append(cmdArgs, valuesFile)
-		} else {
-			// NAME
-			cmdArgs = append(cmdArgs, chart.Release)
+		cmdArgs = append(cmdArgs, "--values")
+		cmdArgs = append(cmdArgs, valuesFile)
 
-			// CHART
-			cmdArgs = append(cmdArgs, chart.ChartURL())
-
-			// Add the namespace if given
-			if len(chart.Namespace) > 0 {
-				cmdArgs = append(cmdArgs, "--namespace")
-				cmdArgs = append(cmdArgs, chart.Namespace)
-			}
-
-			cmdArgs = append(cmdArgs, "--values")
-			cmdArgs = append(cmdArgs, valuesFile)
-
-			if len(chart.Version) > 0 {
-				cmdArgs = append(cmdArgs, "--version")
-				cmdArgs = append(cmdArgs, chart.Version)
-			}
+		if len(chart.Version) > 0 {
+			cmdArgs = append(cmdArgs, "--version")
+			cmdArgs = append(cmdArgs, chart.Version)
 		}
 
 		cmdArgs = append(cmdArgs, args...)

@@ -104,10 +104,6 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 			cmdArgs = append(cmdArgs, chart.ChartURL())
 			cmdArgs = append(cmdArgs, "-i")
 
-			if IsHelm2() {
-				cmdArgs = append(cmdArgs, "--force")
-			}
-
 			if len(chart.Namespace) > 0 {
 				cmdArgs = append(cmdArgs, "--namespace")
 				cmdArgs = append(cmdArgs, chart.Namespace)
@@ -128,16 +124,10 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 				continue
 			}
 
-			if IsHelm2() {
-				cmdArgs = append(cmdArgs, "delete")
-				cmdArgs = append(cmdArgs, "--purge")
-				cmdArgs = append(cmdArgs, chart.Release)
-			} else {
-				cmdArgs = append(cmdArgs, "uninstall")
-				cmdArgs = append(cmdArgs, chart.Release)
-				cmdArgs = append(cmdArgs, "--namespace")
-				cmdArgs = append(cmdArgs, chart.Namespace)
-			}
+			cmdArgs = append(cmdArgs, "uninstall")
+			cmdArgs = append(cmdArgs, chart.Release)
+			cmdArgs = append(cmdArgs, "--namespace")
+			cmdArgs = append(cmdArgs, chart.Namespace)
 		}
 
 		cmdArgs = append(cmdArgs, args...)
