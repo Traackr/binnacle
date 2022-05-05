@@ -28,7 +28,7 @@ import (
 )
 
 func TestChartURL_WithRepo(t *testing.T) {
-	viper.SetConfigFile("../test-data/demo.yml")
+	viper.SetConfigFile("../testdata/demo.yml")
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 
@@ -36,7 +36,7 @@ func TestChartURL_WithRepo(t *testing.T) {
 }
 
 func TestChartURL_WithoutRepo(t *testing.T) {
-	viper.SetConfigFile("../test-data/without-repo.yml")
+	viper.SetConfigFile("../testdata/without-repo.yml")
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 

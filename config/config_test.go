@@ -28,7 +28,7 @@ import (
 )
 
 func TestBooleanIsNotCoerced(t *testing.T) {
-	viper.SetConfigFile("../test-data/demo.yml")
+	viper.SetConfigFile("../testdata/demo.yml")
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 
@@ -37,25 +37,25 @@ func TestBooleanIsNotCoerced(t *testing.T) {
 }
 
 func TestLoadAndValidateFromViper_Unmarshallable(t *testing.T) {
-	viper.SetConfigFile("../test-data/unmarshallable.yml")
+	viper.SetConfigFile("../testdata/unmarshallable.yml")
 	viper.ReadInConfig()
-	
+
 	_, err := LoadAndValidateFromViper()
 	assert.NotNil(t, err)
 }
 
 func TestLoadAndValidateFromViper_DefaultChartState(t *testing.T) {
-	viper.SetConfigFile("../test-data/default-state.yml")
+	viper.SetConfigFile("../testdata/default-state.yml")
 	viper.ReadInConfig()
-	
+
 	c, _ := LoadAndValidateFromViper()
 	assert.Equal(t, c.Charts[0].State, "present")
 }
 
 func TestLoadAndValidateFromViper_DefaultRepoState(t *testing.T) {
-	viper.SetConfigFile("../test-data/default-state.yml")
+	viper.SetConfigFile("../testdata/default-state.yml")
 	viper.ReadInConfig()
-	
+
 	c, _ := LoadAndValidateFromViper()
 	assert.Equal(t, c.Repositories[0].State, "present")
 }
