@@ -26,5 +26,5 @@ require (
 	github.com/spf13/pflag v0.0.0-20160413144353-8f6a28b09165 // indirect
 	golang.org/x/sys v0.0.0-20160415135844-f64b50fbea64 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
-	gopkg.in/yaml.v2 v2.0.0-20160301204022-a83829b6f129 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
