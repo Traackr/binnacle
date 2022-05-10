@@ -22,34 +22,40 @@ package config
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRepositoryEquals_NamesDoNotMatch(t *testing.T) {
 	rep1 := RepositoryConfig{Name: "foo1", URL: ""}
 	rep2 := RepositoryConfig{Name: "foo2", URL: ""}
 
-	assert.Equal(t, false, rep1.Equal(rep2))
+	if rep1.Equal(rep2) {
+		t.Errorf("want %#v to NOT equal %#v", rep1, rep2)
+	}
 }
 
 func TestRepositoryEquals_URLsDoNotMatch(t *testing.T) {
 	rep1 := RepositoryConfig{Name: "foo", URL: "url1"}
 	rep2 := RepositoryConfig{Name: "foo", URL: "url2"}
 
-	assert.Equal(t, false, rep1.Equal(rep2))
+	if rep1.Equal(rep2) {
+		t.Errorf("want %#v to NOT equal %#v", rep1, rep2)
+	}
 }
 
 func TestRepositoryEquals_IgnoresState(t *testing.T) {
 	rep1 := RepositoryConfig{Name: "foo", URL: "url", State: "present"}
 	rep2 := RepositoryConfig{Name: "foo", URL: "url", State: "absent"}
 
-	assert.Equal(t, true, rep1.Equal(rep2))
+	if !rep1.Equal(rep2) {
+		t.Errorf("want %#v to equal %#v", rep1, rep2)
+	}
 }
 
 func TestRepositoryEquals(t *testing.T) {
 	rep1 := RepositoryConfig{Name: "foo", URL: "url"}
 	rep2 := RepositoryConfig{Name: "foo", URL: "url"}
 
-	assert.Equal(t, true, rep1.Equal(rep2))
+	if !rep1.Equal(rep2) {
+		t.Errorf("want %#v to equal %#v", rep1, rep2)
+	}
 }

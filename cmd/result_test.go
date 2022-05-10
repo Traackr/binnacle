@@ -22,12 +22,14 @@ package cmd
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewResult(t *testing.T) {
-	assert.Equal(t, 1, NewResult().ExitCode)
+	got := NewResult().ExitCode
+	want := 1
+	if got != want {
+		t.Errorf("want NewResult exit code to be %d, got %d", want, got)
+	}
 }
 func TestGetError(t *testing.T) {
 	var result Result
@@ -35,5 +37,9 @@ func TestGetError(t *testing.T) {
 
 	result.Stderr = testData
 
-	assert.Equal(t, testData, result.Error())
+	got := result.Error()
+	want := testData
+	if got != want {
+		t.Errorf("want result.Error to be %s, got %s", want, got)
+	}
 }

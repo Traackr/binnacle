@@ -21,10 +21,9 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/spf13/viper"
 )
 
 func TestChartURL_WithRepo(t *testing.T) {
@@ -32,7 +31,11 @@ func TestChartURL_WithRepo(t *testing.T) {
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 
-	assert.Equal(t, c.Charts[0].ChartURL(), "stable/concourse")
+	got := c.Charts[0].ChartURL()
+	want := "stable/concourse"
+	if got != want {
+		t.Errorf("want chart URL %s, but got %s", want, got)
+	}
 }
 
 func TestChartURL_WithoutRepo(t *testing.T) {
@@ -40,5 +43,9 @@ func TestChartURL_WithoutRepo(t *testing.T) {
 	viper.ReadInConfig()
 	c, _ := LoadAndValidateFromViper()
 
-	assert.Equal(t, c.Charts[0].ChartURL(), "https://github.com/pantsel/konga/blob/master/charts/konga/konga-1.0.0.tgz?raw=true")
+	got := c.Charts[0].ChartURL()
+	want := "https://github.com/pantsel/konga/blob/master/charts/konga/konga-1.0.0.tgz?raw=true"
+	if got != want {
+		t.Errorf("want chart URL %s, but got %s", want, got)
+	}
 }

@@ -21,10 +21,9 @@
 package config
 
 import (
-	"github.com/spf13/viper"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/spf13/viper"
 )
 
 func TestBooleanIsNotCoerced(t *testing.T) {
@@ -33,7 +32,11 @@ func TestBooleanIsNotCoerced(t *testing.T) {
 	c, _ := LoadAndValidateFromViper()
 
 	ingressConfig := c.Charts[0].Values["ingress"].(map[string]interface{})
-	assert.Equal(t, ingressConfig["enabled"], true)
+	want := true
+	got := ingressConfig["enabled"]
+	if want != got {
+		t.Errorf("want `ingress.enabled` to be type=%T value=%v, but got type=%T value=%v", want, want, got, got)
+	}
 }
 
 func TestLoadAndValidateFromViper_Unmarshallable(t *testing.T) {
@@ -41,7 +44,9 @@ func TestLoadAndValidateFromViper_Unmarshallable(t *testing.T) {
 	viper.ReadInConfig()
 
 	_, err := LoadAndValidateFromViper()
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Errorf("want an error for unmarshallable data, but was nil")
+	}
 }
 
 func TestLoadAndValidateFromViper_DefaultChartState(t *testing.T) {
@@ -49,7 +54,11 @@ func TestLoadAndValidateFromViper_DefaultChartState(t *testing.T) {
 	viper.ReadInConfig()
 
 	c, _ := LoadAndValidateFromViper()
-	assert.Equal(t, c.Charts[0].State, "present")
+	got := c.Charts[0].State
+	want := "present"
+	if got != want {
+		t.Errorf("want state to be %s, but got %s", want, got)
+	}
 }
 
 func TestLoadAndValidateFromViper_DefaultRepoState(t *testing.T) {
@@ -57,5 +66,9 @@ func TestLoadAndValidateFromViper_DefaultRepoState(t *testing.T) {
 	viper.ReadInConfig()
 
 	c, _ := LoadAndValidateFromViper()
-	assert.Equal(t, c.Repositories[0].State, "present")
+	got := c.Repositories[0].State
+	want := "present"
+	if got != want {
+		t.Errorf("want state to be %s, but got %s", want, got)
+	}
 }
