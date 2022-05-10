@@ -5,10 +5,6 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 # Get the name of the package we are building
 PACKAGE="$(basename "$DIR")"
-# Get the name of the organization
-ORGANIZATION="$(basename "$(dirname "$DIR")")"
-# Get the name of the repository
-REPOSITORY="$(basename "$(dirname "$(dirname "$DIR")")")"
 
 : ${LOCAL_TARGET="$(go env GOOS)_$(go env GOARCH)"}
 
@@ -39,7 +35,7 @@ shasum256() {
 
 GIT_COMMIT="$(git rev-parse --short HEAD)"
 GIT_DIRTY="$(test -n "`git status --porcelain`" && echo "+CHANGES" || true)"
-EXTLDFLAGS="-X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.GITCOMMIT=${GIT_COMMIT}${GIT_DIRTY} -X $REPOSITORY/$ORGANIZATION/$PACKAGE/cmd.VERSION=$VERSION"
+EXTLDFLAGS="-X github.com/Traackr/binnacle/cmd.GITCOMMIT=${GIT_COMMIT}${GIT_DIRTY} -X github.com/Traackr/binnacle/cmd.VERSION=$VERSION"
 STATIC="-extldflags '-static'"
 
 #
