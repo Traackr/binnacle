@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade to go 1.18.1
 - Upgrade go-yaml.v2 to 2.4.0
 - Fix build to properly include VERSION
+- Standardize error handling
+- Add support for running Kustomize as a post-renderer
 
 ## [0.7.1] - 2022-05-05
 

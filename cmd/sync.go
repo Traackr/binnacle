@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -38,8 +37,8 @@ var syncCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		syncCmdPreRun()
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		syncCmdRun(args...)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return syncCmdRun(args...)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		syncCmdPostRun()
@@ -54,29 +53,31 @@ func syncCmdPreRun() {
 	log.Debug("Executing `sync` command.")
 }
 
-func syncCmdRun(args ...string) {
+func syncCmdRun(args ...string) error {
 	// Load our configuration
 	c, err := config.LoadAndValidateFromViper()
 	if err != nil {
-		log.Fatalf("unable to load configuration: %v", err)
+		return err
 	}
 
 	// Sync repositories
 	if err := syncRepositories(c.Repositories, args...); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Sync charts
-	if err := syncCharts(c.Charts, args...); err != nil {
-		log.Fatal(err)
+	if err := syncCharts(c.Charts, c.ConfigFile, args...); err != nil {
+		return err
 	}
+
+	return nil
 }
 
 func syncCmdPostRun() {
 	log.Debug("Execution of the `sync` command has completed.")
 }
 
-func syncCharts(charts []config.ChartConfig, args ...string) error {
+func syncCharts(charts []config.ChartConfig, configFile string, args ...string) error {
 	for _, chart := range charts {
 		var cmdArgs []string
 		var res Result
@@ -85,17 +86,17 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 
 		if chart.State == config.StatePresent {
 			// Create a temp working directory
-			dir, err := ioutil.TempDir("", "binnacle-exec")
+			dir, err := SetupBinnacleWorkingDir()
 			if err != nil {
 				return err
 			}
 			defer os.RemoveAll(dir)
-			var valuesFile = dir + "/values.yml"
 
 			//
 			// Template out the charts values
 			//
-			if err = chart.WriteValueFile(valuesFile); err != nil {
+			valuesFile, err := chart.WriteValueFile(dir)
+			if err != nil {
 				return err
 			}
 
@@ -114,6 +115,15 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 			if len(chart.Version) > 0 {
 				cmdArgs = append(cmdArgs, "--version")
 				cmdArgs = append(cmdArgs, chart.Version)
+			}
+
+			if !chart.Kustomize.Empty() {
+				postRenderExecutable, err := SetupKustomize(dir, configFile, chart)
+				if err != nil {
+					return err
+				}
+				cmdArgs = append(cmdArgs, "--post-renderer")
+				cmdArgs = append(cmdArgs, postRenderExecutable)
 			}
 		} else {
 
@@ -134,8 +144,7 @@ func syncCharts(charts []config.ChartConfig, args ...string) error {
 
 		res, err := RunHelmCommand(cmdArgs...)
 		if err != nil {
-			fmt.Println(strings.TrimSpace(res.Stderr))
-			return err
+			return fmt.Errorf("running helm sync for release %s: %s: %w", chart.Release, res.Stderr, err)
 		}
 
 		fmt.Println(strings.TrimSpace(res.Stdout))

@@ -31,7 +31,8 @@ const StatePresent = "present"
 
 // BinnacleConfig definition
 type BinnacleConfig struct {
-	Charts       []ChartConfig      `mapstructure:"charts"`
+	Charts       []ChartConfig `mapstructure:"charts"`
+	ConfigFile   string
 	Context      string             `mapstructure:"kube-context"`
 	LogLevel     string             `mapstructure:"loglevel"`
 	Release      string             `mapstructure:"release"`
@@ -43,8 +44,10 @@ func LoadAndValidateFromViper() (*BinnacleConfig, error) {
 	var config BinnacleConfig
 
 	if err := viper.Unmarshal(&config); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("reading config file: %w", err)
 	}
+
+	config.ConfigFile = viper.ConfigFileUsed()
 
 	// Set general defaults
 	if len(config.Context) == 0 {
