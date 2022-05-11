@@ -436,7 +436,7 @@ exec kustomize build %s
 	}
 
 	kustomizationYmlPath := filepath.Join(tmpDir, "kustomization.yml")
-	log.Infof("kustomization.yml: \n%s", string(kustomizationData))
+	log.Debugf("kustomization.yml: \n%s", string(kustomizationData))
 	err = os.WriteFile(kustomizationYmlPath, kustomizationData, 0644)
 	if err != nil {
 		return "", fmt.Errorf("writing generated kustomization.yml: %w", err)
