@@ -6,26 +6,33 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056
-	github.com/spf13/cobra v0.0.0-20160403140835-4c05eb1145f1
-	github.com/spf13/viper v0.0.0-20160420224014-f904a1790545
+	github.com/spf13/cobra v1.4.0
+	github.com/spf13/viper v1.11.0
 )
 
 require (
-	github.com/BurntSushi/toml v0.2.0 // indirect
+	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fsnotify/fsnotify v1.3.0 // indirect
-	github.com/hashicorp/hcl v0.0.0-20160413172542-27a57f2605e0 // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/kr/pretty v0.2.1 // indirect
-	github.com/kr/text v0.1.0 // indirect
-	github.com/magiconair/properties v1.7.0 // indirect
-	github.com/mitchellh/mapstructure v0.0.0-20160212031839-d2dd02622084 // indirect
+	github.com/kr/pretty v0.3.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/magiconair/properties v1.8.6 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spf13/cast v0.0.0-20160314192028-27b586b42e29 // indirect
-	github.com/spf13/jwalterweatherman v0.0.0-20160311093646-33c24e77fb80 // indirect
-	github.com/spf13/pflag v0.0.0-20160413144353-8f6a28b09165 // indirect
-	github.com/stretchr/testify v1.1.5-0.20170601210322-f6abca593680 // indirect
-	golang.org/x/sys v0.0.0-20160415135844-f64b50fbea64 // indirect
+	github.com/spf13/afero v1.8.2 // indirect
+	github.com/spf13/cast v1.5.0 // indirect
+	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/testify v1.7.1 // indirect
+	github.com/subosito/gotenv v1.2.0 // indirect
+	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
+	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

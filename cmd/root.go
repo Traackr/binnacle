@@ -49,16 +49,11 @@ var VERSION string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "binnacle",
-	Short: "An opinionated automation tool for Kubernetes' Helm.",
-	Long:  ``,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return rootCmdPersistentPreRun(cmd)
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		rootCmdRun()
-	},
+	Use:          "binnacle",
+	Short:        "An opinionated automation tool for Kubernetes' Helm.",
+	Long:         ``,
 	SilenceUsage: true,
+	Version:      fmt.Sprintf("%s-%s", VERSION, GITCOMMIT),
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -70,6 +65,7 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
 	// General Flags
 	RootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The Binnacle config file (required)")
 	RootCmd.MarkFlagRequired("config")
@@ -77,28 +73,11 @@ func init() {
 	// Logging Flags
 	RootCmd.PersistentFlags().String("loglevel", "info", "The level of logging. Acceptable values: debug, info, warn, error, fatal, panic.")
 	viper.BindPFlag("loglevel", RootCmd.PersistentFlags().Lookup("loglevel"))
-
-	// Version Flag
-	RootCmd.PersistentFlags().Bool("version", false, "Show the version and exit.")
-	viper.BindPFlag("version", RootCmd.PersistentFlags().Lookup("version"))
-
-	// Helm Related Flags
-	RootCmd.PersistentFlags().String("helm", "helm", "The path to the Helm binary.")
-	viper.BindPFlag("helm", RootCmd.PersistentFlags().Lookup("helm"))
 }
 
-func rootCmdPersistentPreRun(cmd *cobra.Command) error {
-
-	// Handle the special case of the version
-	if cmd.Name() == "binnacle" {
-		if viper.IsSet("version") && viper.GetBool("version") {
-			fmt.Printf("%s-%s\n", VERSION, GITCOMMIT)
-			os.Exit(0)
-		}
-	}
-
+func initConfig() {
 	if cfgFile == "" {
-		return fmt.Errorf("no configuration file specified")
+		log.Fatal("no configuration file specified")
 	}
 
 	viper.SetConfigFile(cfgFile)
@@ -107,7 +86,7 @@ func rootCmdPersistentPreRun(cmd *cobra.Command) error {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("loading configuration file '%s': %w", viper.ConfigFileUsed(), err)
+		log.Fatalf("Failed to load configuration file '%s': %v", viper.ConfigFileUsed(), err)
 	}
 
 	fmt.Println("Loaded config file:", viper.ConfigFileUsed())
@@ -117,11 +96,6 @@ func rootCmdPersistentPreRun(cmd *cobra.Command) error {
 	log.Level = logLevel
 	log.Debug("Logger initialized.")
 
-	return nil
-}
-
-func rootCmdRun() {
-	// This is here as a no-op to allow `binnacle --version` to work correctly
 }
 
 // PluginInstalled returns if the given plugin is installed
@@ -189,14 +163,18 @@ func RunHelmCommand(args ...string) (Result, error) {
 	var result Result
 	var outbuf, errbuf bytes.Buffer
 
-	cmd := exec.Command(viper.GetString("helm"), args...)
+	helm, err := exec.LookPath("helm")
+	if err != nil {
+		return result, fmt.Errorf("searching for helm on PATH: %w", err)
+	}
+	cmd := exec.Command(helm, args...)
 
 	log.Debugf("Executing command:  %v", cmd.Args)
 
 	cmd.Stdout = &outbuf
 	cmd.Stderr = &errbuf
 
-	var err = cmd.Run()
+	err = cmd.Run()
 
 	log.Debugf("Execution complete.")
 

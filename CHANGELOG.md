@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fix build to properly include VERSION
 - Standardize error handling
 - Add support for running Kustomize as a post-renderer
+- Upgrade cobra to 1.4.0
+- Upgrade viper to 1.11.0
 
 ## [0.7.1] - 2022-05-05
 
