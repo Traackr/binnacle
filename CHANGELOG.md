@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Upgrade cobra to 1.4.0
 - Upgrade viper to 1.11.0
 - Upgrade to go 1.18.2
+- Upgrade logrus to 1.8.1
 
 ## [0.7.1] - 2022-05-05
 
