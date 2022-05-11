@@ -6,13 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 - Remove support for Helm 2
-- Upgrade to go 1.18.1
 - Upgrade go-yaml.v2 to 2.4.0
 - Fix build to properly include VERSION
 - Standardize error handling
 - Add support for running Kustomize as a post-renderer
 - Upgrade cobra to 1.4.0
 - Upgrade viper to 1.11.0
+- Upgrade to go 1.18.2
 
 ## [0.7.1] - 2022-05-05
 
