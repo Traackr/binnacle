@@ -107,6 +107,7 @@ func diffCmdRun(args ...string) error {
 		cmdArgs = append(cmdArgs, "upgrade")
 		cmdArgs = append(cmdArgs, chart.Release)
 		cmdArgs = append(cmdArgs, chart.ChartURL())
+		cmdArgs = append(cmdArgs, "--color")
 		cmdArgs = append(cmdArgs, "--values")
 		cmdArgs = append(cmdArgs, valuesFile)
 
