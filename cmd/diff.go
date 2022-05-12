@@ -109,6 +109,8 @@ func diffCmdRun(args ...string) error {
 		cmdArgs = append(cmdArgs, chart.ChartURL())
 		cmdArgs = append(cmdArgs, "--color")
 		cmdArgs = append(cmdArgs, "--normalize-manifests")
+		cmdArgs = append(cmdArgs, "--install")
+		cmdArgs = append(cmdArgs, "--three-way-merge")
 		cmdArgs = append(cmdArgs, "--values")
 		cmdArgs = append(cmdArgs, valuesFile)
 
