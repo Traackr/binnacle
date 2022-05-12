@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- None at this time
+
+## [0.8.0] - 2022-05-12
+
 - Remove support for Helm 2
 - Fix build to properly include VERSION
 - Standardize error handling
@@ -137,8 +141,13 @@ This example shows the `repo` has been omitted and the name pointing to a URL us
 
 - Initial release
 
-[Unreleased]: https://github.com/traackr/binnacle/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/traackr/binnacle/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/traackr/binnacle/tree/0.8.0
+[0.7.1]: https://github.com/traackr/binnacle/tree/0.7.1
+[0.7.0]: https://github.com/traackr/binnacle/tree/0.7.0
+[0.6.0]: https://github.com/traackr/binnacle/tree/0.6.0
 [0.5.1]: https://github.com/traackr/binnacle/tree/0.5.1
+[0.5.0]: https://github.com/traackr/binnacle/tree/0.5.0
 [0.4.0]: https://github.com/traackr/binnacle/tree/0.4.0
 [0.3.1]: https://github.com/traackr/binnacle/tree/0.3.1
 [0.3.0]: https://github.com/traackr/binnacle/tree/0.3.0
