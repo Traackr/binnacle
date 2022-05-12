@@ -25,10 +25,12 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/Traackr/binnacle/config"
+	"github.com/ghodss/yaml"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -50,20 +52,20 @@ var RootCmd = &cobra.Command{
 	Use:   "binnacle",
 	Short: "An opinionated automation tool for Kubernetes' Helm.",
 	Long:  ``,
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		rootCmdPersistentPreRun(cmd)
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		return rootCmdPersistentPreRun(cmd)
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		rootCmdRun()
 	},
+	SilenceUsage: true,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
+		os.Exit(1)
 	}
 }
 
@@ -85,7 +87,7 @@ func init() {
 	viper.BindPFlag("helm", RootCmd.PersistentFlags().Lookup("helm"))
 }
 
-func rootCmdPersistentPreRun(cmd *cobra.Command) {
+func rootCmdPersistentPreRun(cmd *cobra.Command) error {
 
 	// Handle the special case of the version
 	if cmd.Name() == "binnacle" {
@@ -96,14 +98,7 @@ func rootCmdPersistentPreRun(cmd *cobra.Command) {
 	}
 
 	if cfgFile == "" {
-		fmt.Println(cmd.UsageString())
-		os.Exit(-1)
-	}
-
-	// Verify the file exists
-	if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
-		fmt.Println("config file does not exist!")
-		os.Exit(-1)
+		return fmt.Errorf("no configuration file specified")
 	}
 
 	viper.SetConfigFile(cfgFile)
@@ -112,16 +107,17 @@ func rootCmdPersistentPreRun(cmd *cobra.Command) {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Loading config file:", viper.ConfigFileUsed())
-		fmt.Printf("  %s.  Exiting!\n", err)
-		os.Exit(-1)
+		return fmt.Errorf("loading configuration file '%s': %w", viper.ConfigFileUsed(), err)
 	}
-	fmt.Println("Loading config file:", viper.ConfigFileUsed())
+
+	fmt.Println("Loaded config file:", viper.ConfigFileUsed())
 
 	// Initialize the logger for all commands to use
 	logLevel, _ := logrus.ParseLevel(viper.GetString("loglevel"))
 	log.Level = logLevel
 	log.Debug("Logger initialized.")
+
+	return nil
 }
 
 func rootCmdRun() {
@@ -137,8 +133,7 @@ func PluginInstalled(plugin string) (bool, error) {
 	// Get a list of currently installed plugins
 	res, err = RunHelmCommand("plugin", "list")
 	if err != nil {
-		fmt.Println(strings.TrimSpace(res.Stderr))
-		return false, err
+		return false, fmt.Errorf("running helm plugin list: %s: %w", res.Stderr, err)
 	}
 
 	// Split the output on the new line
@@ -210,10 +205,10 @@ func RunHelmCommand(args ...string) (Result, error) {
 
 	if err != nil {
 		//
-		// This crafty snippet is from https://stackoverflow.com/questions/10385551/get-exit-code-go
+		// This crafty snippet is from https://stackoverflow.com/a/55055100
 		//
 		if exitError, ok := err.(*exec.ExitError); ok {
-			result.ExitCode = exitError.Sys().(syscall.WaitStatus).ExitStatus()
+			result.ExitCode = exitError.ExitCode()
 		} else {
 			if result.Stderr == "" {
 				result.Stderr = err.Error()
@@ -251,8 +246,7 @@ func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
 
 			res, err = RunHelmCommand(cmdArgs...)
 			if err != nil {
-				fmt.Println(strings.TrimSpace(res.Stderr))
-				return err
+				return fmt.Errorf("running helm repo remove: %s: %w", res.Stderr, err)
 			}
 		}
 		cmdArgs = nil
@@ -266,8 +260,7 @@ func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
 
 			res, err = RunHelmCommand(cmdArgs...)
 			if err != nil {
-				fmt.Println(strings.TrimSpace(res.Stderr))
-				return err
+				return fmt.Errorf("running helm repo add: %s: %w", res.Stderr, err)
 			}
 			reposModified = true
 
@@ -285,8 +278,7 @@ func syncRepositories(repos []config.RepositoryConfig, args ...string) error {
 		cmdArgs = append(cmdArgs, "update")
 		res, err = RunHelmCommand(cmdArgs...)
 		if err != nil {
-			fmt.Println(strings.TrimSpace(res.Stderr))
-			return err
+			return fmt.Errorf("running helm repo update: %s: %w", res.Stderr, err)
 		}
 		fmt.Println(strings.TrimSpace(res.Stdout))
 	}
@@ -303,8 +295,7 @@ func getCurrentRepositories() ([]config.RepositoryConfig, error) {
 	// Get a list of currently configured repositories
 	res, err = RunHelmCommand("repo", "list")
 	if err != nil {
-		fmt.Println(strings.TrimSpace(res.Stderr))
-		return nil, err
+		return nil, fmt.Errorf("running helm repo list: %s: %w", res.Stderr, err)
 	}
 
 	// Split the output on the new line
@@ -361,4 +352,95 @@ func repoExists(repo config.RepositoryConfig, repos []config.RepositoryConfig) (
 	}
 
 	return exists, fullMatch
+}
+
+func SetupBinnacleWorkingDir() (string, error) {
+	dir, err := os.MkdirTemp("", "binnacle-exec")
+	if err != nil {
+		return "", fmt.Errorf("creating temporary working directory: %w", err)
+	}
+
+	return dir, nil
+}
+
+// Set up the kustomize post-renderer script and kustomization.yml
+func SetupKustomize(tmpDir string, configPath string, chart config.ChartConfig) (string, error) {
+	kustomize, err := exec.LookPath("kustomize")
+	if err != nil {
+		return "", fmt.Errorf("configuring kustomize: kustomize was not installed")
+	}
+
+	// Use a random filename to prevent conflicts with any actual filenames
+	helmTemplateFilename := fmt.Sprintf("%s.yml", uuid.New())
+	// Script that reads stdin (result of helm template) and runs kustomize,
+	// which will write the result to stdout, returning it to Helm
+	// NOTE: The script will be executed by Helm, using the current PATH and current working directory
+	script := fmt.Sprintf(`#!/bin/sh
+cat > %s
+exec %s build %s
+`, filepath.Join(tmpDir, helmTemplateFilename), kustomize, tmpDir)
+	scriptPath := filepath.Join(tmpDir, "exec-kustomize.sh")
+	err = os.WriteFile(scriptPath, []byte(script), 0755)
+	if err != nil {
+		return "", fmt.Errorf("writing exec-kustomize script: %w", err)
+	}
+
+	binnacleFilesDir := filepath.Dir(configPath)
+
+	// Fix relative paths (relative to binnacle dir) to be accessible from the tmp dir
+	resources := chart.Kustomize.Resources
+	for i, r := range resources {
+		resourcePath := filepath.Join(binnacleFilesDir, r)
+		data, err := os.ReadFile(resourcePath)
+		if err != nil {
+			return "", fmt.Errorf("reading kustomize resource file: %w", err)
+		}
+		tmpResourcePath := filepath.Join(tmpDir, filepath.Base(r))
+		err = os.WriteFile(tmpResourcePath, data, 0644)
+		if err != nil {
+			return "", fmt.Errorf("writing temporary kustomize resource file: %w", err)
+		}
+		resources[i] = filepath.Base(r)
+	}
+	// Add in the file with the helm-templated contents
+	resources = append(resources, helmTemplateFilename)
+
+	patches := chart.Kustomize.Patches
+	if len(patches) == 0 {
+		patches = make([]config.Patch, 0)
+	}
+	for i, p := range patches {
+		if len(p.Path) == 0 {
+			continue
+		}
+
+		patchPath := filepath.Join(binnacleFilesDir, p.Path)
+		data, err := os.ReadFile(patchPath)
+		if err != nil {
+			return "", fmt.Errorf("reading kustomize patch file: %w", err)
+		}
+		tmpPatchPath := filepath.Join(tmpDir, filepath.Base(p.Path))
+		err = os.WriteFile(tmpPatchPath, data, 0644)
+		if err != nil {
+			return "", fmt.Errorf("writing temporary kustomize patch file: %w", err)
+		}
+		patches[i].Path = filepath.Base(p.Path)
+	}
+
+	kustomizationData, err := yaml.Marshal(config.BinnacleKustomization{
+		Resources: resources,
+		Patches:   patches,
+	})
+	if err != nil {
+		return "", fmt.Errorf("marshalling generated kustomization.yml to yaml: %w", err)
+	}
+
+	kustomizationYmlPath := filepath.Join(tmpDir, "kustomization.yml")
+	log.Debugf("kustomization.yml: \n%s", string(kustomizationData))
+	err = os.WriteFile(kustomizationYmlPath, kustomizationData, 0644)
+	if err != nil {
+		return "", fmt.Errorf("writing generated kustomization.yml: %w", err)
+	}
+
+	return scriptPath, nil
 }

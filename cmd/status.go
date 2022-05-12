@@ -36,8 +36,8 @@ var statusCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		statusCmdPreRun()
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		statusCmdRun(args...)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return statusCmdRun(args...)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		statusCmdPostRun()
@@ -52,13 +52,12 @@ func statusCmdPreRun() {
 	log.Debug("Executing `status` command.")
 }
 
-func statusCmdRun(args ...string) {
+func statusCmdRun(args ...string) error {
 
 	// Load our configuration
 	c, err := config.LoadAndValidateFromViper()
-
 	if err != nil {
-		log.Fatalf("unable to load configuration: %v", err)
+		return err
 	}
 
 	var charts = c.Charts
@@ -83,12 +82,13 @@ func statusCmdRun(args ...string) {
 
 		res, err = RunHelmCommand(cmdArgs...)
 		if err != nil {
-			log.Errorf("helm status for release %s failed with the following:", chart.Release)
-			log.Fatal(res.Stderr)
+			return fmt.Errorf("running helm status for release %s: %w", chart.Release, err)
 		}
 
 		fmt.Println(strings.TrimSpace(res.Stdout))
 	}
+
+	return nil
 }
 
 func statusCmdPostRun() {

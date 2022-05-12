@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/ghodss/yaml v1.0.0
+	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056
 	github.com/spf13/cobra v0.0.0-20160403140835-4c05eb1145f1
 	github.com/spf13/viper v0.0.0-20160420224014-f904a1790545

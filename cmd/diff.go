@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -38,8 +37,8 @@ var diffCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		diffCmdPreRun()
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		diffCmdRun(args...)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return diffCmdRun(args...)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		diffCmdPostRun()
@@ -54,29 +53,28 @@ func diffCmdPreRun() {
 	log.Debug("Executing `diff` command.")
 }
 
-func diffCmdRun(args ...string) {
+func diffCmdRun(args ...string) error {
 	var err error
 
 	// Detect if the diff plugin is installed.
 	pluginInstalled, err := PluginInstalled("diff")
 	if err != nil {
-		log.Fatalf("error detecting if diff plugin is installed: %v", err)
+		return fmt.Errorf("detecting if helm-diff plugin is installed: %w", err)
 	}
 
 	if !pluginInstalled {
-		log.Fatalf("helm-diff plugin is required. Please see: https://github.com/databus23/helm-diff")
+		return fmt.Errorf("checking for helm-diff plugin: helm-diff plugin is required, Please see: https://github.com/databus23/helm-diff")
 	}
 
 	// Load our configuration
 	c, err := config.LoadAndValidateFromViper()
-
 	if err != nil {
-		log.Fatalf("unable to load configuration: %v", err)
+		return err
 	}
 
 	// Sync repositories
 	if err := syncRepositories(c.Repositories, args...); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	var charts = c.Charts
@@ -91,19 +89,18 @@ func diffCmdRun(args ...string) {
 		log.Debugf("Processing chart: %s", chart.ChartURL())
 
 		// Create a temp working directory
-		dir, err := ioutil.TempDir("", "binnacle-exec")
+		dir, err := SetupBinnacleWorkingDir()
 		if err != nil {
-			log.Fatalf("error creating temp directory: %v", err)
+			return err
 		}
 		defer os.RemoveAll(dir)
-
-		var valuesFile = dir + "/values.yml"
 
 		//
 		// Template out the charts values
 		//
-		if err = chart.WriteValueFile(valuesFile); err != nil {
-			log.Fatal(err)
+		valuesFile, err := chart.WriteValueFile(dir)
+		if err != nil {
+			return err
 		}
 
 		cmdArgs = append(cmdArgs, "diff")
@@ -123,15 +120,25 @@ func diffCmdRun(args ...string) {
 			cmdArgs = append(cmdArgs, chart.Version)
 		}
 
+		if !chart.Kustomize.Empty() {
+			postRenderExecutable, err := SetupKustomize(dir, c.ConfigFile, chart)
+			if err != nil {
+				return err
+			}
+			cmdArgs = append(cmdArgs, "--post-renderer")
+			cmdArgs = append(cmdArgs, postRenderExecutable)
+		}
+
 		cmdArgs = append(cmdArgs, args...)
 		res, err = RunHelmCommand(cmdArgs...)
 		if err != nil {
-			log.Errorf("helm diff upgrade for release %s failed with the following:", chart.Release)
-			log.Fatal(res.Stderr)
+			return fmt.Errorf("running helm diff for release %s: %s: %w", chart.Release, res.Stderr, err)
 		}
 
 		fmt.Println(strings.TrimSpace(res.Stdout))
 	}
+
+	return nil
 }
 
 func diffCmdPostRun() {

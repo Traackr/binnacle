@@ -21,21 +21,62 @@
 package config
 
 import (
-	"io/ioutil"
+	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/ghodss/yaml"
 )
 
 // ChartConfig definition
 type ChartConfig struct {
-	Name      string                 `mapstructure:"name"`
-	Namespace string                 `mapstructure:"namespace"`
-	Release   string                 `mapstructure:"release"`
-	Repo      string                 `mapstructure:"repo"`
-	State     string                 `mapstructure:"state"`
-	URL       string                 `mapstructure:"url"`
-	Values    map[string]interface{} `mapstructure:"values"`
-	Version   string                 `mapstructure:"version"`
+	Kustomize BinnacleKustomization `mapstructure:"kustomize"`
+	Name      string                `mapstructure:"name"`
+	Namespace string                `mapstructure:"namespace"`
+	Release   string                `mapstructure:"release"`
+	Repo      string                `mapstructure:"repo"`
+	State     string                `mapstructure:"state"`
+	URL       string                `mapstructure:"url"`
+	Values    map[string]any        `mapstructure:"values"`
+	Version   string                `mapstructure:"version"`
+}
+
+// Adapted from https://github.com/kubernetes-sigs/kustomize/blob/master/api/types/kustomization.go
+type BinnacleKustomization struct {
+	// https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/resource/
+	Resources []string `mapstructure:"resources,omitempty" json:"resources,omitempty" yaml:"resources,omitempty"`
+
+	// https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/
+	Patches []Patch `mapstructure:"patches,omitempty" json:"patches,omitempty" yaml:"patches,omitempty"`
+}
+
+type Patch struct {
+	Path    string          `mapstructure:"path,omitempty" json:"path,omitempty" yaml:"path,omitempty"`
+	Patch   string          `mapstructure:"patch,omitempty" json:"patch,omitempty" yaml:"patch,omitempty"`
+	Target  *Selector       `mapstructure:"target,omitempty" json:"target,omitempty" yaml:"target,omitempty"`
+	Options map[string]bool `mapstructure:"options,omitempty" json:"options,omitempty" yaml:"options,omitempty"`
+}
+
+type Selector struct {
+	ResId              `mapstructure:",squash,omitempty" json:",inline,omitempty" yaml:",inline,omitempty"`
+	AnnotationSelector string `mapstructure:"annotationSelector,omitempty" json:"annotationSelector,omitempty" yaml:"annotationSelector,omitempty"`
+	LabelSelector      string `mapstructure:"labelSelector,omitempty" json:"labelSelector,omitempty" yaml:"labelSelector,omitempty"`
+}
+
+type ResId struct {
+	Gvk       `mapstructure:",squash,omitempty" json:",inline,omitempty" yaml:",inline,omitempty"`
+	Name      string `mapstructure:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty"`
+	Namespace string `mapstructure:"namespace,omitempty" json:"namespace,omitempty" yaml:"namespace,omitempty"`
+}
+
+type Gvk struct {
+	Group   string `mapstructure:"group,omitempty" json:"group,omitempty" yaml:"group,omitempty"`
+	Version string `mapstructure:"version,omitempty" json:"version,omitempty" yaml:"version,omitempty"`
+	Kind    string `mapstructure:"kind,omitempty" json:"kind,omitempty" yaml:"kind,omitempty"`
+}
+
+func (k BinnacleKustomization) Empty() bool {
+	return len(k.Resources) == 0 && len(k.Patches) == 0
 }
 
 // ChartURL returns a URL related to the given repo and name of the chart based off of
@@ -48,18 +89,25 @@ type ChartConfig struct {
 //
 func (c ChartConfig) ChartURL() string {
 	// If a repository is given return the c
-	if len(c.Repo) > 0 { 
+	if len(c.Repo) > 0 {
 		return c.Repo + "/" + c.Name
 	}
 	return c.Name
 }
 
 // WriteValueFile writes the given file containing the Chart's Values
-func (c ChartConfig) WriteValueFile(file string) error {
+func (c ChartConfig) WriteValueFile(dir string) (string, error) {
 	// Marshall the values into a string
 	y, err := yaml.Marshal(c.Values)
 	if err != nil {
-		return err
+		return "", fmt.Errorf("marshalling chart values: %w", err)
 	}
-	return ioutil.WriteFile(file, y, 0644)
+
+	valuesYml := filepath.Join(dir, "values.yml")
+	err = os.WriteFile(valuesYml, y, 0644)
+	if err != nil {
+		return "", fmt.Errorf("writing temporary values.yml file: %w", err)
+	}
+
+	return valuesYml, nil
 }

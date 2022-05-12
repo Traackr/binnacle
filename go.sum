@@ -6,6 +6,8 @@ github.com/fsnotify/fsnotify v1.3.0 h1:XyNoRE4PlEAzjaHYBqJuJC18jNWyfDVJ2jwD5kCuw
 github.com/fsnotify/fsnotify v1.3.0/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/ghodss/yaml v1.0.0 h1:wQHKEahhL6wmXdzwWG11gIVCkOv05bNOh+Rxn0yngAk=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
+github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
+github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/hashicorp/hcl v0.0.0-20160413172542-27a57f2605e0 h1:sask+pvAA8lhDHiFTDUx82Fc7QUSLkbLMIx/w2dLt+g=
 github.com/hashicorp/hcl v0.0.0-20160413172542-27a57f2605e0/go.mod h1:oZtUIOe8dh44I2q6ScRibXws4Ajl+d+nod3AaR9vL5w=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=

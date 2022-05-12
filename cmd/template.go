@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -38,8 +37,8 @@ var templateCmd = &cobra.Command{
 	PreRun: func(cmd *cobra.Command, args []string) {
 		templateCmdPreRun()
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		templateCmdRun(args...)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return templateCmdRun(args...)
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		templateCmdPostRun()
@@ -54,17 +53,17 @@ func templateCmdPreRun() {
 	log.Debug("Executing `template` command.")
 }
 
-func templateCmdRun(args ...string) {
+func templateCmdRun(args ...string) error {
 	// Load our configuration
 	c, err := config.LoadAndValidateFromViper()
 
 	if err != nil {
-		log.Fatalf("unable to load configuration: %v", err)
+		return err
 	}
 
 	// Sync repositories
 	if err := syncRepositories(c.Repositories, args...); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	var charts = c.Charts
@@ -87,19 +86,18 @@ func templateCmdRun(args ...string) {
 		}
 
 		// Create a temp working directory
-		dir, err := ioutil.TempDir("", "binnacle-exec")
+		dir, err := SetupBinnacleWorkingDir()
 		if err != nil {
-			log.Fatalf("error creating temp directory: %v", err)
+			return err
 		}
 		defer os.RemoveAll(dir)
-
-		var valuesFile = dir + "/values.yml"
 
 		//
 		// Template out the charts values
 		//
-		if err = chart.WriteValueFile(valuesFile); err != nil {
-			log.Fatal(err)
+		valuesFile, err := chart.WriteValueFile(dir)
+		if err != nil {
+			return err
 		}
 
 		//
@@ -129,12 +127,20 @@ func templateCmdRun(args ...string) {
 			cmdArgs = append(cmdArgs, chart.Version)
 		}
 
+		if !chart.Kustomize.Empty() {
+			postRenderExecutable, err := SetupKustomize(dir, c.ConfigFile, chart)
+			if err != nil {
+				return err
+			}
+			cmdArgs = append(cmdArgs, "--post-renderer")
+			cmdArgs = append(cmdArgs, postRenderExecutable)
+		}
+
 		cmdArgs = append(cmdArgs, args...)
 
 		res, err = RunHelmCommand(cmdArgs...)
 		if err != nil {
-			log.Errorf("helm template failed with the following:")
-			log.Fatal(res.Stderr)
+			return fmt.Errorf("running helm template for release %s: %s: %w", chart.Release, res.Stderr, err)
 		}
 
 		fmt.Println(strings.TrimSpace(res.Stdout))
@@ -147,6 +153,8 @@ func templateCmdRun(args ...string) {
 			log.Infof("  %s", chart)
 		}
 	}
+
+	return nil
 }
 
 func templateCmdPostRun() {
