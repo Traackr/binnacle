@@ -25,7 +25,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ghodss/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 // ChartConfig definition
@@ -44,35 +44,35 @@ type ChartConfig struct {
 // Adapted from https://github.com/kubernetes-sigs/kustomize/blob/master/api/types/kustomization.go
 type BinnacleKustomization struct {
 	// https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/resource/
-	Resources []string `mapstructure:"resources,omitempty" json:"resources,omitempty" yaml:"resources,omitempty"`
+	Resources []string `mapstructure:"resources,omitempty" yaml:"resources,omitempty"`
 
 	// https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/
-	Patches []Patch `mapstructure:"patches,omitempty" json:"patches,omitempty" yaml:"patches,omitempty"`
+	Patches []Patch `mapstructure:"patches,omitempty" yaml:"patches,omitempty"`
 }
 
 type Patch struct {
-	Path    string          `mapstructure:"path,omitempty" json:"path,omitempty" yaml:"path,omitempty"`
-	Patch   string          `mapstructure:"patch,omitempty" json:"patch,omitempty" yaml:"patch,omitempty"`
-	Target  *Selector       `mapstructure:"target,omitempty" json:"target,omitempty" yaml:"target,omitempty"`
-	Options map[string]bool `mapstructure:"options,omitempty" json:"options,omitempty" yaml:"options,omitempty"`
+	Path    string          `mapstructure:"path,omitempty" yaml:"path,omitempty"`
+	Patch   string          `mapstructure:"patch,omitempty" yaml:"patch,omitempty"`
+	Target  *Selector       `mapstructure:"target,omitempty" yaml:"target,omitempty"`
+	Options map[string]bool `mapstructure:"options,omitempty" yaml:"options,omitempty"`
 }
 
 type Selector struct {
-	ResId              `mapstructure:",squash,omitempty" json:",inline,omitempty" yaml:",inline,omitempty"`
-	AnnotationSelector string `mapstructure:"annotationSelector,omitempty" json:"annotationSelector,omitempty" yaml:"annotationSelector,omitempty"`
-	LabelSelector      string `mapstructure:"labelSelector,omitempty" json:"labelSelector,omitempty" yaml:"labelSelector,omitempty"`
+	ResId              `mapstructure:",squash,omitempty" yaml:",inline,omitempty"`
+	AnnotationSelector string `mapstructure:"annotationSelector,omitempty" yaml:"annotationSelector,omitempty"`
+	LabelSelector      string `mapstructure:"labelSelector,omitempty" yaml:"labelSelector,omitempty"`
 }
 
 type ResId struct {
-	Gvk       `mapstructure:",squash,omitempty" json:",inline,omitempty" yaml:",inline,omitempty"`
-	Name      string `mapstructure:"name,omitempty" json:"name,omitempty" yaml:"name,omitempty"`
-	Namespace string `mapstructure:"namespace,omitempty" json:"namespace,omitempty" yaml:"namespace,omitempty"`
+	Gvk       `mapstructure:",squash,omitempty" yaml:",inline,omitempty"`
+	Name      string `mapstructure:"name,omitempty" yaml:"name,omitempty"`
+	Namespace string `mapstructure:"namespace,omitempty" yaml:"namespace,omitempty"`
 }
 
 type Gvk struct {
-	Group   string `mapstructure:"group,omitempty" json:"group,omitempty" yaml:"group,omitempty"`
-	Version string `mapstructure:"version,omitempty" json:"version,omitempty" yaml:"version,omitempty"`
-	Kind    string `mapstructure:"kind,omitempty" json:"kind,omitempty" yaml:"kind,omitempty"`
+	Group   string `mapstructure:"group,omitempty" yaml:"group,omitempty"`
+	Version string `mapstructure:"version,omitempty" yaml:"version,omitempty"`
+	Kind    string `mapstructure:"kind,omitempty" yaml:"kind,omitempty"`
 }
 
 func (k BinnacleKustomization) Empty() bool {

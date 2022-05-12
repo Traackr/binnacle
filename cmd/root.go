@@ -29,11 +29,11 @@ import (
 	"strings"
 
 	"github.com/Traackr/binnacle/config"
-	"github.com/ghodss/yaml"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
 var cfgFile string
