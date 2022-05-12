@@ -365,7 +365,7 @@ func SetupBinnacleWorkingDir() (string, error) {
 
 // Set up the kustomize post-renderer script and kustomization.yml
 func SetupKustomize(tmpDir string, configPath string, chart config.ChartConfig) (string, error) {
-	_, err := exec.LookPath("kustomize")
+	kustomize, err := exec.LookPath("kustomize")
 	if err != nil {
 		return "", fmt.Errorf("configuring kustomize: kustomize was not installed")
 	}
@@ -377,8 +377,8 @@ func SetupKustomize(tmpDir string, configPath string, chart config.ChartConfig) 
 	// NOTE: The script will be executed by Helm, using the current PATH and current working directory
 	script := fmt.Sprintf(`#!/bin/sh
 cat > %s
-exec kustomize build %s
-`, filepath.Join(tmpDir, helmTemplateFilename), tmpDir)
+exec %s build %s
+`, filepath.Join(tmpDir, helmTemplateFilename), kustomize, tmpDir)
 	scriptPath := filepath.Join(tmpDir, "exec-kustomize.sh")
 	err = os.WriteFile(scriptPath, []byte(script), 0755)
 	if err != nil {
