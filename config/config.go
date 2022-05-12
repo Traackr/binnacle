@@ -43,7 +43,7 @@ type BinnacleConfig struct {
 func LoadAndValidateFromViper() (*BinnacleConfig, error) {
 	var config BinnacleConfig
 
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := viper.UnmarshalExact(&config); err != nil {
 		return nil, fmt.Errorf("reading config file: %w", err)
 	}
 
